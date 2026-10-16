@@ -225,7 +225,7 @@ let confettiRun = 0;
 function confetti(n = 90) {
   if (S.settings.calm) return;
   const cv = $('#fx'), ctx = cv.getContext('2d'); cv.width = innerWidth; cv.height = innerHeight;
-  const cols = ['#8b5cf6', '#fbbf24', '#34d399', '#fb7185', '#60a5fa', '#fff'];
+  const cs = getComputedStyle(document.documentElement), cols = ['--acc', '--gold', '--good', '--bad', '--blue', '--txt'].map(v => cs.getPropertyValue(v).trim() || '#fff');
   const ps = Array.from({ length: n }, () => ({ x: innerWidth / 2, y: innerHeight * .4, vx: (Math.random() - .5) * 14, vy: -Math.random() * 14 - 4, s: 5 + Math.random() * 6, c: pick(cols), r: Math.random() * 6, vr: (Math.random() - .5) * .4 }));
   const id = ++confettiRun;
   (function frame() {
@@ -257,6 +257,7 @@ function award(xp, coins = 0, stat = null) {
   if (stat) { S.stats[stat] = (S.stats[stat] || 0) + xp; wkStat()[stat] = (wkStat()[stat] || 0) + xp; }
   S.history[today()] = (S.history[today()] || 0) + xp;
   toast(`+${xp} XP${coins ? `  ·  +${coins} 🪙` : ''}`);
+  if (typeof popNum === 'function') popNum('+' + xp + ' XP', 'xp');
   if (level() > before) levelUp(level());
 }
 function revoke(xp, coins = 0, stat = null) {
@@ -483,7 +484,7 @@ function weeklyCard() {
     <div style="text-align:left;margin-top:12px">${objs.map(o => {
       const done = o.prog >= o.target, cl = w.claimed[o.k];
       return `<div class="task ${cl ? 'done' : ''}" style="margin-bottom:6px"><div class="em">${o.e}</div><div class="grow"><div class="nm" style="font-size:.92rem">${o.label}: ${Math.min(o.prog, o.target)}/${o.target}</div>
-        <div class="bar gold" style="height:7px"><i style="width:${Math.min(100, o.prog / o.target * 100)}%;background:linear-gradient(90deg,#a78bfa ${o.head / o.prog * 100}%,#fbbf24 ${o.head / o.prog * 100}%)"></i></div>
+        <div class="bar gold" style="height:7px"><i style="width:${Math.min(100, o.prog / o.target * 100)}%;background:linear-gradient(90deg,var(--mp) ${o.head / o.prog * 100}%,var(--gold) ${o.head / o.prog * 100}%)"></i></div>
         <div class="sm dim" style="font-size:.7rem">${o.raw} earned + ${o.head} head start</div></div>
         ${cl ? '<span class="chip">✓</span>' : done ? `<button class="btn gold sm" data-act="wclaim" data-v="${o.k}">+60 XP</button>` : ''}</div>`;
     }).join('')}</div>
@@ -1269,9 +1270,9 @@ function nextUpCard() {
 function viewFocus() {
   const f = S.focus, b = f.boss, a = f.active, todayMin = f.sessions.filter(s => s.date === today()).reduce((n, s) => n + s.min, 0);
   const rem = a ? Math.max(0, a.endAt - Date.now()) : f.min * 60000;
-  const ring = `<div class="ring"><svg width="230" height="230"><circle cx="115" cy="115" r="105" fill="none" stroke="#2a2257" stroke-width="12"/>
+  const ring = `<div class="ring"><svg width="230" height="230"><circle cx="115" cy="115" r="105" fill="none" style="stroke:var(--ring-bg)" stroke-width="12"/>
     <circle id="fr" cx="115" cy="115" r="105" fill="none" stroke="url(#g)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${CIRC}" stroke-dashoffset="${a ? CIRC * (1 - rem / (a.min * 60000)) : 0}"/>
-    <defs><linearGradient id="g"><stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#fbbf24"/></linearGradient></defs></svg>
+    <defs><linearGradient id="g"><stop offset="0" style="stop-color:var(--ring-a)"/><stop offset="1" style="stop-color:var(--ring-b)"/></linearGradient></defs></svg>
     <div class="t" id="ft">${pad(Math.floor(rem / 60000))}:${pad(Math.floor(rem / 1000) % 60)}</div></div>`;
   return `<div class="card boss"><div class="sm dim">Boss #${f.tier + 1}</div><div class="big">${b.emoji}</div><b>${esc(b.name)}</b>
     <div class="bar red"><i style="width:${b.hp / b.max * 100}%"></i></div><div class="sm dim">${b.hp} / ${b.max} HP</div></div>
@@ -1304,9 +1305,9 @@ function radar() {
   const lv = STAT_KEYS.map(k => statLevel(S.stats[k])), mx = Math.max(5, ...lv), cx = 120, cy = 115, R = 80;
   const pt = (i, f) => { const a = -Math.PI / 2 + i * 2 * Math.PI / 6; return [cx + Math.cos(a) * R * f, cy + Math.sin(a) * R * f]; };
   const poly = lv.map((l, i) => pt(i, l / mx).join(',')).join(' ');
-  const rings = [.33, .66, 1].map(f => `<polygon points="${STAT_KEYS.map((_, i) => pt(i, f).join(',')).join(' ')}" fill="none" stroke="#3a3170"/>`).join('');
-  const labels = STAT_KEYS.map((k, i) => { const [x, y] = pt(i, 1.28); return `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="13" fill="#f1eeff">${STATS[k].e} ${lv[i]}</text>`; }).join('');
-  return `<svg viewBox="0 0 240 230" width="100%" style="max-width:300px;display:block;margin:auto">${rings}<polygon points="${poly}" fill="#8b5cf655" stroke="#c4b5fd" stroke-width="2"/>${labels}</svg>`;
+  const rings = [.33, .66, 1].map(f => `<polygon points="${STAT_KEYS.map((_, i) => pt(i, f).join(',')).join(' ')}" fill="none" style="stroke:var(--radar-line)"/>`).join('');
+  const labels = STAT_KEYS.map((k, i) => { const [x, y] = pt(i, 1.28); return `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="13" style="fill:var(--txt)">${STATS[k].e} ${lv[i]}</text>`; }).join('');
+  return `<svg viewBox="0 0 240 230" width="100%" style="max-width:300px;display:block;margin:auto">${rings}<polygon points="${poly}" style="fill:var(--radar-fill);stroke:var(--radar-stroke)" stroke-width="2"/>${labels}</svg>`;
 }
 function heatmap() {
   const cells = [], end = new Date(), start = new Date(end); start.setDate(start.getDate() - (12 * 7 - 1) - end.getDay());

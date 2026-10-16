@@ -1,4 +1,5 @@
 :root{
+  --mp:#a78bfa; --ring-bg:#2a2257; --ring-a:#8b5cf6; --ring-b:#fbbf24; --radar-line:#3a3170; --radar-fill:#8b5cf655; --radar-stroke:#c4b5fd;
   --bg:#0f0b1e; --bg2:#181330; --card:#1f1942; --card2:#2a2257; --line:#3a3170;
   --txt:#f1eeff; --dim:#a39cd0; --acc:#8b5cf6; --acc2:#c4b5fd; --gold:#fbbf24; --good:#34d399; --bad:#fb7185; --blue:#60a5fa;
   --mind:#60a5fa; --body:#fb7185; --spirit:#c084fc; --craft:#fbbf24; --social:#34d399; --wealth:#f59e0b;

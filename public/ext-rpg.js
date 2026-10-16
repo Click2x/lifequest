@@ -56,3 +56,15 @@ Object.assign(A, {
 }
 HOOKS.hero.push(rpgSettings);
 applySkin();
+
+// ── floating gain numbers: "+25 XP" rises from where you last tapped ──
+let rpgLast = { x: innerWidth / 2, y: innerHeight * .4 };
+document.addEventListener('pointerdown', e => { rpgLast = { x: e.clientX, y: e.clientY }; }, { passive: true, capture: true });
+function popNum(text, kind = 'xp') {
+  if (rpgCalm()) return;
+  const host = document.getElementById('fxl'); if (!host) return;
+  const el = document.createElement('div');
+  el.className = 'popnum ' + kind; el.textContent = text;
+  el.style.left = Math.min(innerWidth - 50, Math.max(50, rpgLast.x)) + 'px'; el.style.top = Math.max(60, rpgLast.y - 30) + 'px';
+  host.appendChild(el); setTimeout(() => el.remove(), 1000);
+}

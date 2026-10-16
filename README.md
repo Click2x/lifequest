@@ -1,9 +1,45 @@
-﻿# LifeQuest — self-hosted gamified life coach
+﻿<p align="center"><img src="docs/banner.svg" alt="LifeQuest: your real life, played as a 16-bit RPG. Beta, under construction." width="100%"></p>
+
+<h1 align="center">LifeQuest</h1>
+<p align="center"><b>A self-hosted life coach that plays like a classic turn-based JRPG.</b><br>Habits, tasks, money and planning on your phone, a party of friends, and a daily AI-written D&amp;D episode starring your hero.</p>
+<p align="center">
+  <img alt="status: beta" src="https://img.shields.io/badge/status-beta%20%7C%20under%20construction-ff5d73?style=flat-square">
+  <img alt="license: MIT" src="https://img.shields.io/badge/license-MIT-ffd23f?style=flat-square">
+  <img alt="no dependencies" src="https://img.shields.io/badge/dependencies-none-5cf28a?style=flat-square">
+  <img alt="node 18+" src="https://img.shields.io/badge/node-18%2B-7fd4ff?style=flat-square">
+  <img alt="PWA" src="https://img.shields.io/badge/PWA-installable-2639b8?style=flat-square">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/rpg-1-today-night.jpg" alt="Today screen, Night theme" width="190">
+  <img src="docs/screenshots/rpg-4-plan-boss.jpg" alt="Weekly boss objectives" width="190">
+  <img src="docs/screenshots/rpg-5-money.jpg" alt="Money envelopes" width="190">
+  <img src="docs/screenshots/rpg-2-today-parchment.jpg" alt="Today screen, Parchment theme" width="190">
+</p>
 
 > ## 🚧 Under construction: beta software
 > LifeQuest is **in active development and in beta**. Features change often, some things are unfinished or untested on real hardware (see [docs/OPEN-ITEMS.md](docs/OPEN-ITEMS.md)), and the UI is mid-way through a retro-RPG redesign ([docs/UI-REFRESH.md](docs/UI-REFRESH.md)). Expect rough edges and breaking changes, and keep backups of your data (Hero → *Export backup*). It is built for self-hosting on a home network, not for exposure to the public internet. Issues and feedback are welcome.
 
 An installable phone app (PWA) that turns your life into an RPG. No accounts, no cloud, no dependencies. Needs Node 18+.
+
+## The party menu
+
+| Command | What it does |
+|---|---|
+| **Town (Today)** | Your day at a glance: daily rituals, next quest, check-in, time left, tonight's Saga odds |
+| **Quests (Plan)** | Tasks and a time-aware plan instead of a calendar grid, plus the weekly boss and its objectives |
+| **Shop (Money)** | Envelope budgeting, quick spend logging, safe-to-spend number, CSV import. Amounts can be hidden |
+| **Dojo (Focus)** | Focus timers as duels against bosses |
+| **Guild (Squad)** | Opt-in friend leaderboard, cheers, shared raid bosses, squad challenges, monthly league |
+| **Sage (Coach)** | A gentle coach with tips and a daily journal prompt, grounded in habit research (see [docs/RESEARCH.md](docs/RESEARCH.md)) |
+| **Status (Hero)** | Six stats, achievements, rewards you define yourself, and the Look settings (16-bit or Classic, Night or Parchment) |
+| **The Saga** | Every morning, yesterday's real actions become a D&D-style episode with a d20 roll against the weekly boss |
+
+Everything runs on your own machine, saves instantly on the phone, and works offline.
+
+## Roadmap
+
+The look is being rebuilt as a "16-bit Saga" in phases (plan: [docs/UI-REFRESH.md](docs/UI-REFRESH.md)). Done: the theme layer and component restyle. Next: a Final Fantasy-style main menu and bottom bar, then the Saga as a full turn-based battle scene. Known gaps are tracked in [docs/OPEN-ITEMS.md](docs/OPEN-ITEMS.md).
 
 ## The Saga (daily anime/D&D episode)
 
@@ -143,3 +179,7 @@ Without it, the Coach tab uses a built-in scripted coach.
 
 Change the port with `PORT=9000`. Regenerate icons with `node tools/make-icons.js`.
 
+
+## License
+
+[MIT](LICENSE). Contributions and bug reports are welcome while this is in beta.

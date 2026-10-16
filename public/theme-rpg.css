@@ -11,6 +11,7 @@
   --gold:#ffd23f; --good:#5cf28a; --bad:#ff5d73; --blue:#7fd4ff;
   --hp:#5cf28a; --hp-low:#ffd23f; --hp-crit:#ff5d73; --mp:#7fd4ff; --xp:#ffd23f;
   --mind:#7fd4ff; --body:#ff8a8a; --spirit:#d6a8ff; --craft:#ffd23f; --social:#6ff0a8; --wealth:#ffb547;
+  --ring-bg:#04051a; --ring-a:#7fd4ff; --ring-b:#ffd23f; --radar-line:rgb(232 236 255 / .35); --radar-fill:rgb(255 210 63 / .35); --radar-stroke:#ffd23f;
   --on-acc:#04051a; --field:#04051a; --on-dark:#ffffff; --on-dark-dim:#b9c3ff; --hi:#ffd23f;
   --font-ui:"Pixelify Sans", ui-monospace, "Cascadia Mono", "Roboto Mono", "Courier New", monospace;
   --font-text:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -26,6 +27,7 @@
     --acc:#b5261e; --acc2:#8c1c16; --gold:#8a5a00; --good:#1f7a3a; --bad:#b5261e; --blue:#1d5aa6;
     --hp:#1f7a3a; --hp-low:#8a5a00; --hp-crit:#b5261e; --mp:#1d5aa6; --xp:#8a5a00;
     --mind:#1d5aa6; --body:#b5261e; --spirit:#6d2fa0; --craft:#8a5a00; --social:#1f7a3a; --wealth:#8a5a00;
+    --ring-bg:#e0cf9f; --ring-a:#1d5aa6; --ring-b:#b5261e; --radar-line:rgb(59 42 20 / .35); --radar-fill:rgb(181 38 30 / .3); --radar-stroke:#b5261e;
     --on-acc:#fff8e4; --field:#fffaf0; --on-dark:#fff8e4; --on-dark-dim:#d9c79b; --hi:#ffd86b;
   }
 }
@@ -37,7 +39,8 @@
   --acc:#b5261e; --acc2:#8c1c16; --gold:#8a5a00; --good:#1f7a3a; --bad:#b5261e; --blue:#1d5aa6;
   --hp:#1f7a3a; --hp-low:#8a5a00; --hp-crit:#b5261e; --mp:#1d5aa6; --xp:#8a5a00;
   --mind:#1d5aa6; --body:#b5261e; --spirit:#6d2fa0; --craft:#8a5a00; --social:#1f7a3a; --wealth:#8a5a00;
-  --on-acc:#fff8e4; --field:#fffaf0; --on-dark:#fff8e4; --on-dark-dim:#d9c79b; --hi:#ffd86b;
+  --ring-bg:#e0cf9f; --ring-a:#1d5aa6; --ring-b:#b5261e; --radar-line:rgb(59 42 20 / .35); --radar-fill:rgb(181 38 30 / .3); --radar-stroke:#b5261e;
+    --on-acc:#fff8e4; --field:#fffaf0; --on-dark:#fff8e4; --on-dark-dim:#d9c79b; --hi:#ffd86b;
 }
 
 /* ── page ── */
@@ -71,7 +74,7 @@
 :root[data-skin="rpg"] .card.glow{box-shadow:0 0 0 var(--px) var(--line-dark),inset 0 0 0 var(--px) var(--acc),inset 0 0 0 calc(var(--px)*2) var(--line-dark)}
 :root[data-skin="rpg"] .task{padding:12px 14px;min-height:56px}
 :root[data-skin="rpg"] .task:active{filter:brightness(1.15)}
-:root[data-skin="rpg"] .hud .avatar{border-radius:4px;border:var(--px) solid var(--line);background:var(--line-dark)}
+:root[data-skin="rpg"] .avatar{border-radius:4px;border:var(--px) solid var(--line);background:var(--line-dark)}
 :root[data-skin="rpg"] .hud .nm{font-size:1.05rem}
 :root[data-skin="rpg"] .chip{background:var(--line-dark);color:var(--hi);border:0;border-radius:2px;box-shadow:inset 0 0 0 var(--px) var(--line)}
 :root[data-skin="rpg"] .win-title,:root[data-skin="rpg"] .cmd-title{display:inline-block;margin:-4px 0 8px;padding:2px 10px;font-size:16px;background:var(--line-dark);color:var(--hi);border-radius:2px}
@@ -184,3 +187,11 @@
 :root[data-skin="rpg"] :is(.portrait,.portrait-slot){border-radius:0;box-shadow:0 0 0 var(--px) var(--line-dark),0 0 0 calc(var(--px)*2) var(--line),0 0 0 calc(var(--px)*3) var(--line-dark);margin:var(--px) var(--px) calc(var(--px)*3)}
 :root[data-skin="rpg"] .portrait-slot{background:var(--line-dark);color:var(--on-dark-dim)}
 :root[data-skin="rpg"] .portrait{image-rendering:auto;filter:saturate(1.15) contrast(1.05)}
+
+/* ── floating gain numbers (live in #fxl, outside #app, so re-renders do not replay them) ── */
+#fxl{position:fixed;inset:0;pointer-events:none;z-index:65;overflow:hidden}
+.popnum{position:absolute;transform:translate(-50%,0);font:700 22px/1 var(--font-ui,monospace);color:var(--gold,#fbbf24);
+  text-shadow:2px 0 var(--line-dark,#000),-2px 0 var(--line-dark,#000),0 2px var(--line-dark,#000),0 -2px var(--line-dark,#000);
+  animation:popnum .9s steps(9) forwards;white-space:nowrap}
+.popnum.coin{color:var(--blue,#7fd4ff)}
+@keyframes popnum{0%{opacity:0;margin-top:6px}12%{opacity:1}70%{opacity:1}100%{opacity:0;margin-top:-46px}}

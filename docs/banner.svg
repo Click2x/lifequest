@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" width="1280" height="360" role="img" aria-label="LifeQuest: a self-hosted RPG for real life. Beta, under construction.">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#05061a"/><stop offset="1" stop-color="#14185a"/></linearGradient>
+    <linearGradient id="win" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f45c9"/><stop offset="1" stop-color="#101a66"/></linearGradient>
+    <pattern id="dots" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill="#ffffff" opacity=".05"/></pattern>
+  </defs>
+  <rect width="1280" height="360" fill="url(#sky)"/>
+  <rect width="1280" height="360" fill="url(#dots)"/>
+  <!-- stars -->
+  <g fill="#ffffff" shape-rendering="crispEdges">
+    <rect x="90" y="40" width="4" height="4"/><rect x="240" y="90" width="4" height="4" opacity=".6"/><rect x="420" y="30" width="4" height="4"/>
+    <rect x="610" y="70" width="4" height="4" opacity=".7"/><rect x="880" y="36" width="4" height="4"/><rect x="1010" y="84" width="4" height="4" opacity=".6"/>
+    <rect x="1160" y="44" width="4" height="4"/><rect x="1210" y="120" width="4" height="4" opacity=".5"/><rect x="60" y="150" width="4" height="4" opacity=".5"/>
+  </g>
+  <!-- main window -->
+  <g shape-rendering="crispEdges">
+    <rect x="62" y="62" width="760" height="236" fill="#04051a"/>
+    <rect x="66" y="66" width="752" height="228" fill="#e8ecff"/>
+    <rect x="70" y="70" width="744" height="220" fill="#04051a"/>
+    <rect x="72" y="72" width="740" height="216" fill="url(#win)"/>
+  </g>
+  <text x="108" y="150" font-family="'Courier New',Consolas,monospace" font-weight="700" font-size="74" fill="#04051a" letter-spacing="4">LIFEQUEST</text>
+  <text x="104" y="146" font-family="'Courier New',Consolas,monospace" font-weight="700" font-size="74" fill="#ffd23f" letter-spacing="4">LIFEQUEST</text>
+  <text x="106" y="196" font-family="'Courier New',Consolas,monospace" font-size="26" fill="#ffffff">Your real life, played as a 16-bit RPG.</text>
+  <text x="106" y="232" font-family="'Courier New',Consolas,monospace" font-size="20" fill="#b9c3ff">Self-hosted · habits · money · squad · a daily AI saga</text>
+  <!-- beta tag -->
+  <g shape-rendering="crispEdges">
+    <rect x="106" y="248" width="330" height="28" fill="#04051a"/><rect x="108" y="250" width="326" height="24" fill="none" stroke="#ff5d73" stroke-width="2"/>
+  </g>
+  <text x="122" y="269" font-family="'Courier New',Consolas,monospace" font-weight="700" font-size="17" fill="#ff5d73">BETA · UNDER CONSTRUCTION</text>
+  <!-- command window -->
+  <g shape-rendering="crispEdges">
+    <rect x="862" y="62" width="356" height="236" fill="#04051a"/>
+    <rect x="866" y="66" width="348" height="228" fill="#e8ecff"/>
+    <rect x="870" y="70" width="340" height="220" fill="#04051a"/>
+    <rect x="872" y="72" width="336" height="216" fill="url(#win)"/>
+  </g>
+  <g font-family="'Courier New',Consolas,monospace" font-size="28" fill="#ffffff">
+    <text x="938" y="124">Quests</text>
+    <text x="938" y="170" fill="#ffd23f">Saga</text>
+    <text x="938" y="216">Shop</text>
+    <text x="938" y="262">Party</text>
+  </g>
+  <!-- cursor on Saga -->
+  <polygon points="898,148 898,170 918,159" fill="#ffd23f" shape-rendering="crispEdges"/>
+  <!-- ground -->
+  <g shape-rendering="crispEdges"><rect x="0" y="328" width="1280" height="32" fill="#0a0e3a"/><rect x="0" y="326" width="1280" height="4" fill="#e8ecff" opacity=".35"/></g>
+</svg>

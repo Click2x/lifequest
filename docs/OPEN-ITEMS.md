@@ -27,6 +27,6 @@ Things we deliberately parked or could not verify. Newest first. Tell me which t
 - The server currently allows 25 profiles (`MAX_PLAYERS`).
 
 ## UI refresh ("16-bit Saga"): plan in docs/UI-REFRESH.md
-- Done: Phase 0 (sound off for new profiles, calm/reduced-motion CSS, keyboard access for tappable rows) and Phase 1 (theme-rpg.css skin, Night/Parchment colors, Classic toggle in Hero > Look, ext-rpg.js, sw cache v4).
-- Pending: pixel font download (Pixelify Sans, OFL; needs the owner's OK to download, falls back to monospace now), Phase 2 de-hardcode inline hex (radar, focus ring, confetti), Phase 3 new nav + main menu, Phase 4 forecast card, Phase 5 battle scene for the Saga, Phase 6 polish.
+- Done: Phase 0 (groundwork), Phase 1 (theme layer), Phase 2 (colors from tokens everywhere, floating gain numbers, keyboard access).
+- Pending: pixel font download (Pixelify Sans, OFL; needs the owner's OK to download, falls back to monospace now), Phase 3 new nav + main menu, Phase 4 forecast card, Phase 5 battle scene for the Saga, Phase 6 polish.
 - Saga end-to-end test (story, then picture, in one run) is not yet confirmed: on the dev machine, Ollama and Stable Diffusion failed to allocate memory when Windows ran out of commit headroom (large WSL VM plus a small pagefile).
