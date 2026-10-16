@@ -1,0 +1,6 @@
+# private runtime data: access token, secrets, push keys, player saves, generated images, local config
+data/
+# local editor/agent config
+.claude/
+node_modules/
+*.log

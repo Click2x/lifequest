@@ -1,0 +1,186 @@
+/* LifeQuest "16-bit Saga" skin. Loaded after style.css; active only when <html data-skin="rpg">.
+   Reuses the existing token names so every current rule picks up the new look. Design: docs/UI-REFRESH.md */
+
+:root[data-skin="rpg"]{
+  --bg:#08091a; --bg2:#10133a;
+  --card:#1b2a8f; --card2:#2639b8;
+  --win-top:#2f45c9; --win-bot:#101a66;
+  --line:#e8ecff; --line-dark:#04051a;
+  --txt:#ffffff; --dim:#b9c3ff;
+  --acc:#ffd23f; --acc2:#ffe98a;
+  --gold:#ffd23f; --good:#5cf28a; --bad:#ff5d73; --blue:#7fd4ff;
+  --hp:#5cf28a; --hp-low:#ffd23f; --hp-crit:#ff5d73; --mp:#7fd4ff; --xp:#ffd23f;
+  --mind:#7fd4ff; --body:#ff8a8a; --spirit:#d6a8ff; --craft:#ffd23f; --social:#6ff0a8; --wealth:#ffb547;
+  --on-acc:#04051a; --field:#04051a; --on-dark:#ffffff; --on-dark-dim:#b9c3ff; --hi:#ffd23f;
+  --font-ui:"Pixelify Sans", ui-monospace, "Cascadia Mono", "Roboto Mono", "Courier New", monospace;
+  --font-text:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --px:2px;
+}
+/* Parchment (light). Auto follows the OS; data-theme="light" forces it; data-theme="dark" forces night. */
+@media (prefers-color-scheme: light){
+  :root[data-skin="rpg"]:not([data-theme="dark"]){
+    --bg:#e9dcb8; --bg2:#f3e9cc; --card:#fbf3dc; --card2:#f1e2b6;
+    --win-top:#fff8e4; --win-bot:#efdfb3;
+    --line:#3b2a14; --line-dark:#3b2a14;
+    --txt:#2a1d0c; --dim:#6b5434;
+    --acc:#b5261e; --acc2:#8c1c16; --gold:#8a5a00; --good:#1f7a3a; --bad:#b5261e; --blue:#1d5aa6;
+    --hp:#1f7a3a; --hp-low:#8a5a00; --hp-crit:#b5261e; --mp:#1d5aa6; --xp:#8a5a00;
+    --mind:#1d5aa6; --body:#b5261e; --spirit:#6d2fa0; --craft:#8a5a00; --social:#1f7a3a; --wealth:#8a5a00;
+    --on-acc:#fff8e4; --field:#fffaf0; --on-dark:#fff8e4; --on-dark-dim:#d9c79b; --hi:#ffd86b;
+  }
+}
+:root[data-skin="rpg"][data-theme="light"]{
+  --bg:#e9dcb8; --bg2:#f3e9cc; --card:#fbf3dc; --card2:#f1e2b6;
+  --win-top:#fff8e4; --win-bot:#efdfb3;
+  --line:#3b2a14; --line-dark:#3b2a14;
+  --txt:#2a1d0c; --dim:#6b5434;
+  --acc:#b5261e; --acc2:#8c1c16; --gold:#8a5a00; --good:#1f7a3a; --bad:#b5261e; --blue:#1d5aa6;
+  --hp:#1f7a3a; --hp-low:#8a5a00; --hp-crit:#b5261e; --mp:#1d5aa6; --xp:#8a5a00;
+  --mind:#1d5aa6; --body:#b5261e; --spirit:#6d2fa0; --craft:#8a5a00; --social:#1f7a3a; --wealth:#8a5a00;
+  --on-acc:#fff8e4; --field:#fffaf0; --on-dark:#fff8e4; --on-dark-dim:#d9c79b; --hi:#ffd86b;
+}
+
+/* ── page ── */
+:root[data-skin="rpg"] body{
+  background:var(--bg);
+  background-image:radial-gradient(color-mix(in srgb,var(--line) 7%,transparent) 1px,transparent 1px);
+  background-size:4px 4px;
+  font:16px/1.5 var(--font-text);-webkit-font-smoothing:antialiased;
+}
+:root[data-skin="rpg"] :is(h2,.btn,.chip,.nm,.hud .ttl,nav button,.seg button,.pills button,.stat b,.price,.tag,.cmd,.win-title,.num,.toast,.badge){
+  font-family:var(--font-ui);letter-spacing:.02em;
+}
+:root[data-skin="rpg"].plainfont :is(h2,.btn,.chip,.nm,.hud .ttl,nav button,.seg button,.pills button,.stat b,.price,.tag,.cmd,.win-title,.num,.toast,.badge){
+  font-family:var(--font-text);letter-spacing:0;
+}
+:root[data-skin="rpg"] h2{font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--acc)}
+:root[data-skin="rpg"] h2 small{color:var(--dim);text-transform:none;letter-spacing:0}
+
+/* ── windows: black hairline, white frame, black hairline. No images, no blur. ── */
+:root[data-skin="rpg"] :is(.card,.task,.stat,.badge,.hud){
+  background:linear-gradient(180deg,var(--win-top),var(--win-bot));
+  border:0;border-radius:4px;
+  box-shadow:
+    0 0 0 var(--px) var(--line-dark),
+    inset 0 0 0 var(--px) var(--line),
+    inset 0 0 0 calc(var(--px)*2) var(--line-dark),
+    inset 0 calc(var(--px)*3) 0 0 rgb(255 255 255 / .08);
+  margin-left:var(--px);margin-right:var(--px);
+}
+:root[data-skin="rpg"] .card{padding:16px 16px 14px}
+:root[data-skin="rpg"] .card.glow{box-shadow:0 0 0 var(--px) var(--line-dark),inset 0 0 0 var(--px) var(--acc),inset 0 0 0 calc(var(--px)*2) var(--line-dark)}
+:root[data-skin="rpg"] .task{padding:12px 14px;min-height:56px}
+:root[data-skin="rpg"] .task:active{filter:brightness(1.15)}
+:root[data-skin="rpg"] .hud .avatar{border-radius:4px;border:var(--px) solid var(--line);background:var(--line-dark)}
+:root[data-skin="rpg"] .hud .nm{font-size:1.05rem}
+:root[data-skin="rpg"] .chip{background:var(--line-dark);color:var(--hi);border:0;border-radius:2px;box-shadow:inset 0 0 0 var(--px) var(--line)}
+:root[data-skin="rpg"] .win-title,:root[data-skin="rpg"] .cmd-title{display:inline-block;margin:-4px 0 8px;padding:2px 10px;font-size:16px;background:var(--line-dark);color:var(--hi);border-radius:2px}
+
+/* ── buttons are commands; the selected one gets the bobbing cursor ── */
+:root[data-skin="rpg"] .btn{
+  font-size:17px;min-height:44px;padding:9px 16px 9px 30px;position:relative;text-align:left;
+  background:var(--line-dark);color:var(--on-dark);border-radius:2px;
+  box-shadow:inset 0 0 0 var(--px) var(--line);
+}
+:root[data-skin="rpg"] .btn.block{display:block}
+:root[data-skin="rpg"] .btn:active{transform:translateY(1px)}
+:root[data-skin="rpg"] .btn.gold{background:var(--acc);color:var(--on-acc);box-shadow:inset 0 0 0 var(--px) var(--line-dark)}
+:root[data-skin="rpg"] .btn.ghost{background:transparent;color:var(--acc2);box-shadow:inset 0 0 0 var(--px) var(--line)}
+:root[data-skin="rpg"] .btn.red{background:#5a0d18;color:#ffd0d6;box-shadow:inset 0 0 0 var(--px) #ff5d73}
+:root[data-skin="rpg"] .btn.sm{font-size:15px;min-height:40px;padding:6px 12px 6px 26px;border-radius:2px}
+:root[data-skin="rpg"] .btn::before,:root[data-skin="rpg"] .cmd::before{
+  content:"";position:absolute;left:10px;top:50%;width:10px;height:12px;margin-top:-6px;
+  background:var(--acc);clip-path:polygon(0 0,100% 50%,0 100%);opacity:0;
+}
+:root[data-skin="rpg"] .btn.gold::before{background:var(--on-acc)}
+:root[data-skin="rpg"] :is(.btn,.cmd):is(:hover,:focus-visible,.on,[aria-current="true"])::before{opacity:1;animation:cursor-bob .5s steps(2) infinite}
+@keyframes cursor-bob{50%{transform:translateX(3px)}}
+:root[data-skin="rpg"] :focus-visible{outline:var(--px) dashed var(--acc);outline-offset:3px}
+:root[data-skin="rpg"] .del{color:var(--dim);min-width:44px;min-height:44px}
+
+.cmds{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.cmd{position:relative;min-height:48px;padding:0 12px 0 28px;text-align:left;background:none;font:20px var(--font-ui,monospace);color:var(--txt)}
+.cmd[aria-disabled="true"]{color:color-mix(in srgb,var(--txt) 40%,transparent)}
+
+/* ── forms ── */
+:root[data-skin="rpg"] :is(input,select,textarea){background:var(--field);color:var(--txt);border:0;border-radius:2px;box-shadow:inset 0 0 0 var(--px) var(--line);font-family:var(--font-text)}
+:root[data-skin="rpg"] :is(input,select,textarea):focus{box-shadow:inset 0 0 0 var(--px) var(--acc)}
+:root[data-skin="rpg"] label{font-size:.85rem;color:var(--dim)}
+:root[data-skin="rpg"] .task .chk{border-radius:2px;border:var(--px) solid var(--line);background:var(--field);transition:none}
+:root[data-skin="rpg"] .task.done .chk{background:var(--good);border-color:var(--line-dark);color:var(--line-dark)}
+:root[data-skin="rpg"] .task.done{opacity:.75}
+:root[data-skin="rpg"] .moods button{background:var(--field);border-radius:2px;box-shadow:inset 0 0 0 var(--px) var(--line);border:0;min-height:48px}
+:root[data-skin="rpg"] .moods button.on{box-shadow:inset 0 0 0 var(--px) var(--acc);background:var(--card2);transform:none}
+:root[data-skin="rpg"] :is(.seg button,.pills button,.qp button,.picker button,.avs button){
+  background:var(--field);color:var(--dim);border:0;border-radius:2px;box-shadow:inset 0 0 0 var(--px) var(--line);min-height:40px;
+}
+:root[data-skin="rpg"] :is(.seg button.on,.pills button.on){background:var(--acc);color:var(--on-acc);box-shadow:inset 0 0 0 var(--px) var(--line-dark)}
+:root[data-skin="rpg"] :is(.picker button.on,.avs button.on){background:var(--card2);box-shadow:inset 0 0 0 var(--px) var(--acc)}
+:root[data-skin="rpg"] .qp button{color:var(--acc2)}
+:root[data-skin="rpg"] .avs button{border-radius:2px;font-size:24px;width:48px;height:48px}
+
+/* ── bars: segmented gauges ── */
+:root[data-skin="rpg"] .bar{height:12px;border-radius:0;background:var(--line-dark);border:0;box-shadow:0 0 0 var(--px) var(--line);margin-top:8px;overflow:hidden}
+:root[data-skin="rpg"] .bar>i{
+  border-radius:0;background:var(--xp);
+  -webkit-mask:repeating-linear-gradient(90deg,#000 0 5px,transparent 5px 6px);
+          mask:repeating-linear-gradient(90deg,#000 0 5px,transparent 5px 6px);
+  transition:width .6s steps(12);
+}
+:root[data-skin="rpg"] .bar.red>i{background:var(--hp)}
+:root[data-skin="rpg"] .bar.gold>i{background:var(--gold)}
+:root[data-skin="rpg"] .bar.hp-low>i{background:var(--hp-low)}
+:root[data-skin="rpg"] .bar.hp-crit>i{background:var(--hp-crit);animation:rpg-blink 1s steps(2) infinite}
+@keyframes rpg-blink{50%{opacity:.55}}
+.gauge{display:grid;grid-template-columns:2.5ch 1fr;align-items:end;column-gap:8px;font-family:var(--font-ui,monospace)}
+.gauge .lbl{color:var(--acc)}.gauge .num{text-align:right}.gauge .bar{grid-column:1/-1;margin-top:2px}
+
+/* ── tags, badges, heatmap, chat ── */
+:root[data-skin="rpg"] .tag{border:0;border-radius:2px;background:var(--line-dark);padding:0 7px;font-size:.78rem;box-shadow:inset 0 0 0 1px currentColor}
+:root[data-skin="rpg"] .badge{font-size:.78rem;color:var(--dim)}
+:root[data-skin="rpg"] .badge.got{color:var(--txt);box-shadow:0 0 0 var(--px) var(--line-dark),inset 0 0 0 var(--px) var(--acc),inset 0 0 0 calc(var(--px)*2) var(--line-dark)}
+:root[data-skin="rpg"] .heat i{border-radius:0;background:color-mix(in srgb,var(--line-dark) 85%,var(--card))}
+:root[data-skin="rpg"] .heat i.l1{background:#2f4a8f}:root[data-skin="rpg"] .heat i.l2{background:#3f8f7a}:root[data-skin="rpg"] .heat i.l3{background:#ffd23f}:root[data-skin="rpg"] .heat i.l4{background:#fff4b8}
+:root[data-skin="rpg"] .msg{border-radius:2px;box-shadow:0 0 0 var(--px) var(--line-dark),inset 0 0 0 var(--px) var(--line);font-family:var(--font-text)}
+:root[data-skin="rpg"] .msg.me{background:var(--acc);color:var(--on-acc)}
+:root[data-skin="rpg"] .msg.bot{background:var(--card2)}
+:root[data-skin="rpg"] .j{background:var(--field);border-left-color:var(--acc);border-radius:0}
+
+/* ── nav: a command bar ── */
+:root[data-skin="rpg"] nav{background:var(--line-dark);backdrop-filter:none;-webkit-backdrop-filter:none;border-top:var(--px) solid var(--line)}
+:root[data-skin="rpg"] nav button{color:var(--on-dark-dim);font-size:.72rem;min-height:56px;padding:8px 0 6px;position:relative}
+:root[data-skin="rpg"] nav button span{filter:none;transition:none;font-size:20px}
+:root[data-skin="rpg"] nav button.on{color:var(--hi);background:rgb(255 255 255 / .12)}
+:root[data-skin="rpg"] nav button.on span{transform:none}
+:root[data-skin="rpg"] nav button.on::after{content:"";position:absolute;left:50%;top:2px;width:8px;height:6px;margin-left:-4px;background:var(--hi);clip-path:polygon(0 0,100% 0,50% 100%);animation:cursor-bob-y .5s steps(2) infinite}
+@keyframes cursor-bob-y{50%{transform:translateY(2px)}}
+
+/* ── toasts, modal ── */
+:root[data-skin="rpg"] .toast{background:var(--line-dark);color:var(--on-dark);border:0;border-radius:2px;box-shadow:0 0 0 var(--px) var(--line),inset 0 0 0 var(--px) var(--line-dark);animation:tin .2s steps(3),tout .3s 2.3s steps(3) forwards}
+:root[data-skin="rpg"] .toast.gold{color:var(--hi);box-shadow:0 0 0 var(--px) var(--acc)}
+:root[data-skin="rpg"] #modal{background:#000b}
+:root[data-skin="rpg"] #modal .sheet{
+  background:linear-gradient(180deg,var(--win-top),var(--win-bot));border:0;border-radius:4px 4px 0 0;
+  box-shadow:0 0 0 var(--px) var(--line-dark),inset 0 0 0 var(--px) var(--line),inset 0 0 0 calc(var(--px)*2) var(--line-dark);
+  animation:up .2s steps(4);
+}
+:root[data-skin="rpg"] #modal.center .sheet{border-radius:4px}
+
+/* ── boss / focus ring / misc motion in steps ── */
+:root[data-skin="rpg"] .boss .big{animation:bob 1.2s steps(2) infinite}
+:root[data-skin="rpg"] .ring .t{font-family:var(--font-ui)}
+:root[data-skin="rpg"] .empty{color:var(--dim)}
+
+/* ── typewriter "more" arrow, shared by dialogue windows ── */
+.more{display:inline-block;margin-left:6px;color:var(--acc);animation:cursor-bob .6s steps(2) infinite}
+
+/* ── reduced motion / calm mode ── */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+:root.calm *,:root.calm *::before,:root.calm *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+
+/* ── saga portraits: framed like a character portrait ── */
+:root[data-skin="rpg"] :is(.portrait,.portrait-slot){border-radius:0;box-shadow:0 0 0 var(--px) var(--line-dark),0 0 0 calc(var(--px)*2) var(--line),0 0 0 calc(var(--px)*3) var(--line-dark);margin:var(--px) var(--px) calc(var(--px)*3)}
+:root[data-skin="rpg"] .portrait-slot{background:var(--line-dark);color:var(--on-dark-dim)}
+:root[data-skin="rpg"] .portrait{image-rendering:auto;filter:saturate(1.15) contrast(1.05)}
