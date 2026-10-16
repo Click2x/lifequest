@@ -97,7 +97,7 @@ const statLevel = xp => Math.floor(Math.sqrt(xp / 25)) + 1;
 const titleOf = l => TITLES[Math.min(TITLES.length - 1, Math.floor((l - 1) / 3))];
 const daySeed = () => { const d = new Date(); return d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate(); };
 // extension points: separate files (ext-*.js) add cards to each tab through these
-const HOOKS = { today: [], 'today-top': [], hero: [], money: [], 'money-top': [], plan: [], board: [] };
+const HOOKS = { today: [], 'today-top': [], hero: [], config: [], money: [], 'money-top': [], plan: [], board: [] };
 const hooks = n => (HOOKS[n] || []).map(f => { try { return f() || ''; } catch (e) { console.error(e); return ''; } }).join('');
 // weeks run Monday–Sunday
 function weekStart(d = new Date()) { const x = new Date(d); x.setHours(12, 0, 0, 0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
@@ -1056,7 +1056,8 @@ const scrollChat = () => setTimeout(() => window.scrollTo({ top: document.body.s
 
 // ───────────────────────── views ─────────────────────────
 let tab = 'today';
-const NAV = [['today', '🏠', 'Today'], ['quests', '🗺️', 'Plan'], ['money', '💰', 'Money'], ['focus', '🎯', 'Focus'], ['squad', '🏰', 'Squad'], ['coach', '💬', 'Coach'], ['hero', '🦸', 'Hero']];
+const NAV = [['today', '🏠', 'Town'], ['quests', '🗺️', 'Quests'], ['saga', '⚔️', 'Saga'], ['money', '💰', 'Shop'], ['menu', '☰', 'Menu']];
+const MENU_TABS = ['hero', 'focus', 'squad', 'coach', 'config'];       // reached from the Menu; the bar highlights Menu for these
 
 function hud() {
   const l = level(), cur = S.xp - xpFor(l), need = xpFor(l + 1) - xpFor(l);
@@ -1075,9 +1076,9 @@ function viewToday() {
   const th = todaysHabits(), done = th.filter(h => h.log[today()]).length, c = S.checkins[today()] || {};
   const tips = coachTips(), tip = tips[tipIdx % tips.length];
   const others = S.habits.filter(h => !scheduled(h) && !h.archived && !h.freq && liteOK(h));
-  return `<div class="card glow coach"><div class="bot">🧙</div><div class="grow"><p>${esc(tip)}</p>
+  return `${hooks('today-top')}<div class="card coach"><div class="bot">🧙</div><div class="grow"><p>${esc(tip)}</p>
     <button class="btn sm ghost" data-act="tip">Another tip</button></div></div>
-  ${hooks('today-top')}${restBanner()}${slipCard()}${autoCard()}${stakeCard()}${weeklyTeaser()}${nextBlockStrip()}${nextUpCard()}${moneyTeaser()}${hooks('today')}
+  ${restBanner()}${slipCard()}${autoCard()}${stakeCard()}${weeklyTeaser()}${nextBlockStrip()}${nextUpCard()}${moneyTeaser()}${hooks('today')}
   <h2>Daily check-in <small>+10 XP</small></h2>
   <div class="card"><div class="sm dim">Mood</div><div class="moods">${MOODS.map((m, i) => `<button class="${c.mood === i ? 'on' : ''}" data-act="mood" data-v="${i}">${m}</button>`).join('')}</div>
   <div class="sm dim" style="margin-top:10px">Energy</div><div class="moods">${['🪫', '🔋', '🔋', '⚡', '🚀'].map((m, i) => `<button class="${c.energy === i ? 'on' : ''}" data-act="energy" data-v="${i}">${m}</button>`).join('')}</div></div>
@@ -1338,7 +1339,10 @@ function viewHero() {
   <h2>🏆 Achievements <small>${Object.keys(S.achievements).length}/${ACH.length}</small></h2>
   <div class="badges">${ACH.map(([id, e, n, d]) => `<div class="badge ${S.achievements[id] ? 'got' : ''}" title="${esc(d)}" data-act="ach" data-id="${id}"><span class="e">${e}</span>${n}</div>`).join('')}</div>
   <h2>Avatar</h2><div class="avs">${AVATARS.map(([e, lv]) => `<button class="${S.profile.avatar === e ? 'on' : ''} ${l < lv ? 'lock' : ''}" data-act="avatar" data-v="${e}" data-lv="${lv}">${l < lv ? '🔒' : e}</button>`).join('')}</div>
-  ${hooks('hero')}
+  ${hooks('hero')}`;
+}
+function viewConfig() {
+  return `<h2>⚙️ Config</h2>${hooks('config')}
   <h2>⚙️ Settings</h2><div class="card">
     <div class="row"><span class="grow">Sound effects</span><button class="btn sm ${S.settings.sound ? '' : 'ghost'}" data-act="set" data-v="sound">${S.settings.sound ? 'On' : 'Off'}</button></div><br>
     <div class="row"><span class="grow">Haptics</span><button class="btn sm ${S.settings.haptics ? '' : 'ghost'}" data-act="set" data-v="haptics">${S.settings.haptics ? 'On' : 'Off'}</button></div><br>
@@ -1359,10 +1363,11 @@ function render() {
   if (document.getElementById('ob-name')) { modalLocked = false; closeModal(); }     // the synced profile arrived while the welcome screen was open
   settleStake();
   processMoneyMonth();
-  const views = { today: viewToday, quests: viewQuests, money: viewMoney, focus: viewFocus, squad: viewSquad, coach: viewCoach, hero: viewHero };
+  const views = { today: viewToday, quests: viewQuests, money: viewMoney, focus: viewFocus, squad: viewSquad, coach: viewCoach, hero: viewHero, saga: viewSaga, menu: viewMenu, config: viewConfig };
   const keep = document.activeElement?.id === 'chatin' ? $('#chatin').value : '';
-  $('#app').innerHTML = hud() + views[tab]() +
-    `<nav><div class="in">${NAV.map(([k, e, n]) => `<button class="${tab === k ? 'on' : ''}" data-act="tab" data-v="${k}"><span>${e}</span>${n}</button>`).join('')}</div></nav>`;
+  const lit = NAV.some(n => n[0] === tab) ? tab : 'menu', back = MENU_TABS.includes(tab) ? '<button class="btn sm ghost backbtn" data-act="tab" data-v="menu">◀ Menu</button>' : '';
+  $('#app').innerHTML = hud() + back + views[tab]() +
+    `<nav><div class="in">${NAV.map(([k, e, n]) => `<button class="${lit === k ? 'on' : ''}${k === 'saga' ? ' saga' : ''}" data-act="tab" data-v="${k}"${lit === k ? ' aria-current="page"' : ''}><span>${e}</span>${n}${k === 'saga' && typeof sagaUnread === 'function' && sagaUnread() ? '<i class="bang" aria-label="new episode">!</i>' : ''}</button>`).join('')}</div></nav>`;
   if (keep && $('#chatin')) { $('#chatin').value = keep; $('#chatin').focus(); }
   if (typeof rpgA11y === 'function') rpgA11y();
 }

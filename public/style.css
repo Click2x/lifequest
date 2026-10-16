@@ -140,3 +140,10 @@ nav button{font-size:.62rem}nav button span{font-size:20px}
 /* saga portraits */
 .portrait{width:100%;object-fit:cover;object-position:top;border-radius:14px;display:block}
 .portrait-slot{display:grid;place-items:center;text-align:center;border-radius:14px;background:linear-gradient(135deg,#2a2257,#1f1942);color:var(--dim)}
+
+/* bottom bar extras */
+nav button{position:relative}
+nav .bang{position:absolute;top:4px;right:calc(50% - 22px);background:var(--bad);color:#fff;border-radius:99px;font:700 .7rem/1 system-ui;font-style:normal;min-width:16px;padding:2px 4px;text-align:center;animation:bang 1s steps(2) infinite}
+@keyframes bang{50%{opacity:.4}}
+.backbtn{margin:10px 0 0}
+.menurow{min-height:60px}

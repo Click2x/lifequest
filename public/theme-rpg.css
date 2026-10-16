@@ -195,3 +195,12 @@
   animation:popnum .9s steps(9) forwards;white-space:nowrap}
 .popnum.coin{color:var(--blue,#7fd4ff)}
 @keyframes popnum{0%{opacity:0;margin-top:6px}12%{opacity:1}70%{opacity:1}100%{opacity:0;margin-top:-46px}}
+
+/* ── 5-slot bar: the Saga slot is raised like a gem set in the frame ── */
+:root[data-skin="rpg"] nav button.saga{margin-top:-14px;min-height:70px;background:linear-gradient(180deg,var(--win-top),var(--win-bot));
+  box-shadow:0 0 0 var(--px) var(--line-dark),inset 0 0 0 var(--px) var(--line),inset 0 0 0 calc(var(--px)*2) var(--line-dark);border-radius:4px 4px 0 0;color:var(--on-dark)}
+:root[data-skin="rpg"] nav button.saga span{font-size:26px}
+:root[data-skin="rpg"] nav button.saga.on{color:var(--hi);box-shadow:0 0 0 var(--px) var(--line-dark),inset 0 0 0 var(--px) var(--hi),inset 0 0 0 calc(var(--px)*2) var(--line-dark)}
+:root[data-skin="rpg"] nav button{font-size:.8rem}
+:root[data-skin="rpg"] .menurow .nm{font-size:1.1rem}
+:root[data-skin="rpg"] .menurow:active .dim:last-child{color:var(--acc)}

@@ -103,7 +103,7 @@ async function snapRestore(date) {
 }
 
 HOOKS.today.push(reviewCard);
-HOOKS.hero.push(securityCard);
+HOOKS.config.push(securityCard);
 HOOKS.board.push(roomCard);
 Object.assign(A, {
   'review-open': reviewForm, 'review-save': reviewSave,
@@ -139,5 +139,5 @@ function linkForm() {
     '<div id="lk-qr" style="background:#fff;padding:10px;border-radius:10px;width:200px;margin:10px auto;min-height:200px"></div><input id="lk-url" readonly onclick="this.select()" style="font-size:.8rem"><br><br><button class="btn block ghost" data-act="close">Done</button>');
   drawLinkQr();
 }
-HOOKS.hero.push(linkCard);
+HOOKS.config.push(linkCard);
 Object.assign(A, { 'link-device': linkForm, 'link-origin': el => { linkSel = +el.dataset.i; linkForm(); } });

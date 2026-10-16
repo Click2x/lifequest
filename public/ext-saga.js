@@ -94,14 +94,14 @@ async function sagaPollEpisode(date) {
     const r = await apiFetch('/api/saga/episode?date=' + date);
     if (r.status === 200) return (await r.json()).episode;
     if (r.status !== 202) throw new Error((await r.json().catch(() => ({}))).error || 'story failed');
-    const ph = (await r.json()).status; if (sagaRT.busy[date] !== ph) { sagaRT.busy[date] = ph; if (tab === 'today') render(); }
+    const ph = (await r.json()).status; if (sagaRT.busy[date] !== ph) { sagaRT.busy[date] = ph; if (tab === 'today' || tab === 'saga') render(); }
     await sleep(i < 20 ? 4000 : 15000);
   }
   const e = new Error('still waiting'); e.keepWaiting = true; throw e;
 }
 async function sagaGenerate(date, again) {
   if (sagaRT.busy[date]) return;
-  sagaRT.busy[date] = 'writing'; if (tab === 'today') render();
+  sagaRT.busy[date] = 'writing'; if (tab === 'today' || tab === 'saga') render();
   const d = sagaDay(date), chk = sagaCheck(date, d); let ep;
   try {
     const st = await sagaStatus(true);
@@ -113,7 +113,7 @@ async function sagaGenerate(date, again) {
     }
     ep = { ...(await sagaPollEpisode(date)), src: 'ai' };
   } catch (e) {
-    if (e.keepWaiting) { delete sagaRT.busy[date]; save(); if (tab === 'today') render(); return; }       // the server keeps the job; sagaResume() collects it later
+    if (e.keepWaiting) { delete sagaRT.busy[date]; save(); if (tab === 'today' || tab === 'saga') render(); return; }       // the server keeps the job; sagaResume() collects it later
     console.warn('Saga: using the template story:', e.message || e); ep = sagaFallback(chk, d);
   }
   delete S.saga.pending[date];
@@ -126,7 +126,7 @@ async function sagaGenerate(date, again) {
 async function sagaPaint(date) {
   const ep = S.saga.eps[date]; if (!ep) return;
   const st = await sagaStatus(true); if (!st || (!st.sd && !st.canLaunchSd)) { ep.img = 'none'; save(); return; }
-  ep.img = 'painting'; save(); if (tab === 'today') render();
+  ep.img = 'painting'; save(); if (tab === 'today' || tab === 'saga') render();
   try {
     const r = await apiFetch('/api/saga/image', { method: 'POST', body: JSON.stringify({ date, look: sagaLook(), gear: sagaGear(ep.lv || level()), scene: ep.scene || '', mood: SAGA_MOOD[ep.check?.outcome] || '', seed: strHash(sagaSeed() + date) % 2147483647 }) });
     if (!r.ok) throw new Error('image refused');
@@ -137,7 +137,7 @@ async function sagaPaint(date) {
       await sleep(5000);
     }
     throw new Error('image timed out');
-  } catch (e) { console.warn('Saga image:', e.message || e); ep.img = 'error'; save(); if (tab === 'today') render(); }
+  } catch (e) { console.warn('Saga image:', e.message || e); ep.img = 'error'; save(); if (tab === 'today' || tab === 'saga') render(); }
 }
 async function sagaLoadImg(date) {
   if (sagaRT.imgs[date] || sagaRT.loadingImg[date] || S.saga.eps[date]?.img !== 'done') return;
@@ -179,8 +179,10 @@ function sagaTonight() {
     <div class="bar" style="height:8px"><i style="width:${odds}%;background:${col}"></i></div>
     <div class="sm dim" style="margin-top:8px">${d.any ? `Action bonus so far: <b style="color:var(--txt)">+${c.bonus}</b>. ` : 'No actions yet today. '}Each two habits, 25 minutes of focus, two quests, a perfect day, and a check-in add to your roll. The dice are rolled tomorrow morning and can't be re-rolled, so make your modifier count. 🎲</div></div>`;
 }
+const sagaUnread = () => { const ep = S.saga.eps[yesterday()]; return !!(S.saga.on && ep && !ep.seen); };
 function sagaRead(date) {
   const ep = S.saga.eps[date]; if (!ep) return;
+  if (!ep.seen) { ep.seen = true; save(); setTimeout(render, 0); }
   const c = ep.check, [e, label, col] = SAGA_OUTCOME[c?.outcome || 'rest'];
   const dice = !c || c.outcome === 'rest' ? '<div class="sm dim" style="text-align:center">🏕️ Rest day, so no dice were rolled. Your hero recovers.</div>' :
     `<div style="text-align:center"><div style="font-size:3rem;font-weight:800;line-height:1">🎲 ${c.d20}</div><div class="sm dim" style="margin:4px 0">d20 ${c.d20} + ${SAGA_ABILITY[c.ability][0]} ${c.mod} + actions ${c.bonus} = <b style="color:var(--txt)">${c.total}</b> vs DC ${c.dc}</div><div style="font-weight:800;color:${col}">${e} ${label}</div></div>`;
@@ -222,7 +224,7 @@ function sagaBoot() {
 }
 
 HOOKS['today-top'].push(sagaCard);
-HOOKS.hero.push(sagaSettings);
+HOOKS.config.push(sagaSettings);
 Object.assign(A, {
   'saga-on': () => { S.saga.on = true; sagaSeed(); save(); render(); toast('The Saga begins! 📖', 'gold'); sagaStatus(true).then(() => tab === 'hero' && render()); setTimeout(sagaAuto, 500); },
   'saga-off': () => { S.saga.on = false; save(); render(); },
@@ -233,3 +235,19 @@ Object.assign(A, {
   'saga-save': () => { S.saga.look = val('sg-look').trim().slice(0, 200); save(); toast('Saved. Your next picture uses this look.'); },
   'saga-check': async () => { toast('Checking…'); await sagaStatus(true); render(); },
 });
+
+// ── the Saga tab: this week's chapter, tonight's forecast, and the chronicle of past episodes ──
+function viewSaga() {
+  const A_ = S.saga, days = weekDays(0), names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], t = today();
+  const c = sagaCheck(t), strip = days.map((d, i) => {
+    const ep = A_.eps[d], glyph = ep ? (SAGA_OUTCOME[ep.check?.outcome] || SAGA_OUTCOME.rest)[0] : (d === t ? '❔' : '·');
+    return `<div style="text-align:center;flex:1;${d === t ? 'color:var(--acc)' : ''}"><div class="sm dim">${names[i]}</div><div style="font-size:22px;min-height:30px">${glyph}</div></div>`;
+  }).join('');
+  const eps = Object.entries(A_.eps).sort().reverse();
+  return `<div class="card"><div class="win-title">CHAPTER ${Math.max(1, A_.n)}</div><div class="row"><div style="font-size:34px">${c.boss.e}</div><div class="grow"><b>${esc(c.boss.n)}</b><div class="sm dim">Villain of the week</div></div></div>
+    <div class="row" style="margin-top:10px">${strip}</div></div>
+    ${sagaCard()}
+    <h2>📜 Chronicle <small>${eps.length} episode${eps.length === 1 ? '' : 's'}</small></h2>
+    ${eps.length ? eps.slice(0, 30).map(([k, e]) => `<div class="task" data-act="saga-read" data-d="${k}"><div class="em">${(SAGA_OUTCOME[e.check?.outcome] || SAGA_OUTCOME.rest)[0]}</div><div class="grow"><div class="nm">Ep ${e.n} · ${esc(e.title)}</div><div class="sm dim">${k}</div></div>${e.seen ? '' : '<span class="chip">NEW</span>'}</div>`).join('') : '<div class="empty">Your first episode appears the morning after your first day of real actions.</div>'}
+    <div class="sm dim" style="margin-top:10px">Saga settings live in Menu → Config.</div>`;
+}

@@ -47,7 +47,7 @@ function engagementEvents(d) {
 function engageRoute() {
   try {
     const go = new URLSearchParams(location.search).get('go');
-    if (go) { tab = ['today', 'quests', 'money', 'focus', 'squad', 'coach', 'hero'].includes(go) ? go : 'today'; history.replaceState(null, '', location.pathname); }
+    if (go) { tab = ['today', 'quests', 'saga', 'money', 'menu', 'focus', 'squad', 'coach', 'hero', 'config'].includes(go) ? go : 'today'; history.replaceState(null, '', location.pathname); }
   } catch { }
 }
 
@@ -60,7 +60,7 @@ function engageSettings() {
 Object.assign(A, {
   'engage-toggle': el => { S.settings.engage = { ...ENG_DEFAULT, ...(S.settings.engage || {}) }; S.settings.engage[el.dataset.v] = !engOn(el.dataset.v); save(); render(); schedulePushSync(); },
 });
-HOOKS.hero.push(engageSettings);
+HOOKS.config.push(engageSettings);
 
 // keep the badge fresh whenever the screen redraws or the app returns to the foreground
 {

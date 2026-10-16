@@ -54,7 +54,7 @@ Object.assign(A, {
     base(el); if (el.dataset.v === 'calm') applySkin();
   };
 }
-HOOKS.hero.push(rpgSettings);
+HOOKS.config.push(rpgSettings);
 applySkin();
 
 // ── floating gain numbers: "+25 XP" rises from where you last tapped ──
@@ -67,4 +67,15 @@ function popNum(text, kind = 'xp') {
   el.className = 'popnum ' + kind; el.textContent = text;
   el.style.left = Math.min(innerWidth - 50, Math.max(50, rpgLast.x)) + 'px'; el.style.top = Math.max(60, rpgLast.y - 30) + 'px';
   host.appendChild(el); setTimeout(() => el.remove(), 1000);
+}
+
+// ── Menu: the pause-screen home for everything that is not in the bottom bar ──
+function viewMenu() {
+  const t = today(), c = sagaCheck(t), odds = Math.round(sagaOdds(c.mod, c.bonus, c.dc) * 100), best = typeof bestStreak === 'function' ? bestStreak() : 0;
+  const rows = [['hero', '🦸', 'Status', 'Stats, achievements, rewards'], ['focus', '🎯', 'Dojo', 'Focus duels'], ['squad', '🏰', 'Guild', 'Party, raids, league'], ['coach', '💬', 'Sage', 'Coach and journal'], ['saga', '📜', 'Chronicle', 'Every episode so far'], ['config', '⚙️', 'Config', 'Look, sound, reminders, backup']];
+  return `<div class="card"><div class="win-title">COMMAND</div>
+    ${rows.map(([k, e, n, d]) => `<div class="task menurow" data-act="tab" data-v="${k}"><div class="em">${e}</div><div class="grow"><div class="nm">${n}</div><div class="sm dim">${d}</div></div><span class="dim">▶</span></div>`).join('')}
+    <div class="task menurow" data-act="export"><div class="em">💾</div><div class="grow"><div class="nm">Save</div><div class="sm dim">Download a backup file</div></div><span class="dim">▶</span></div></div>
+    <div class="grid2"><div class="stat"><div class="sm dim">Gold</div><b>🪙 ${S.coins}</b></div><div class="stat"><div class="sm dim">Best streak</div><b>🔥 ${best} day${best === 1 ? '' : 's'}</b></div></div>
+    ${S.saga.on ? `<div class="card" style="margin-top:10px" data-act="tab" data-v="saga"><div class="win-title">TONIGHT</div><div class="row"><div style="font-size:30px">${c.boss.e}</div><div class="grow"><b>${esc(c.boss.n)}, the ${c.phase}</b><div class="sm dim">Odds ${odds}%</div></div></div></div>` : ''}`;
 }
