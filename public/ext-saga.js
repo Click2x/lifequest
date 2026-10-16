@@ -55,7 +55,7 @@ function sagaPrompt(date, d, chk) {
   const prev = Object.entries(S.saga.eps).filter(([k]) => k < date).sort().slice(-3).map(([, e]) => e.recap).filter(Boolean);
   const o = { critical: 'CRITICAL SUCCESS (natural 20)', success: 'SUCCESS', narrow: 'NARROW MISS', setback: 'SETBACK', fumble: 'FUMBLE (natural 1)', rest: 'REST DAY' }[chk.outcome];
   return [
-    `HERO: ${S.profile.name}, level ${d.lvAfter} ${titleOf(d.lvAfter)}. Class: ${cls}. Gear: ${sagaGear(d.lvAfter)}.`,
+    `HERO: ${S.profile.name}, level ${d.lvAfter} ${titleOf(d.lvAfter)}. Class: ${cls}. Gear: ${sagaGear(d.lvAfter)}.${S.saga.backstory ? ' Backstory (keep consistent, do not repeat it every time): ' + String(S.saga.backstory).replace(/\s+/g, ' ').slice(0, 300) : ''}`,
     `CAMPAIGN: Chapter ${(S.saga.eps[date]?.n) || (S.saga.n + 1)}. This week's villain: ${chk.boss.n}, tonight's form: the ${chk.phase}.`,
     `PREVIOUS EPISODES: ${prev.length ? prev.join(' ') : 'This is the first episode.'}`,
     chk.outcome === 'rest' ? `YESTERDAY'S REAL ACTIONS: none. The hero rested.`
@@ -264,6 +264,7 @@ function viewSaga() {
   const eps = Object.entries(A_.eps).sort().reverse();
   return `<div class="card"><div class="win-title">CHAPTER ${Math.max(1, A_.n)}</div><div class="row"><div style="font-size:34px">${c.boss.e}</div><div class="grow"><b>${esc(c.boss.n)}</b><div class="sm dim">Villain of the week</div></div></div>
     <div class="row" style="margin-top:10px">${strip}</div></div>
+    <div class="card"><button class="link" data-act="tab" data-v="books"><span class="big">📚</span><span class="grow"><span class="t">Storybooks</span><br><span class="dim sm">Read or print each week as a book</span></span><span class="go">▶</span></button></div>
     ${sagaCard()}
     <h2>📜 Chronicle <small>${eps.length} episode${eps.length === 1 ? '' : 's'}</small></h2>
     ${eps.length ? eps.slice(0, 30).map(([k, e]) => `<div class="task" data-act="saga-read" data-d="${k}"><div class="em">${(SAGA_OUTCOME[e.check?.outcome] || SAGA_OUTCOME.rest)[0]}</div><div class="grow"><div class="nm">Ep ${e.n} · ${esc(e.title)}</div><div class="sm dim">${k}</div></div>${e.seen ? '' : '<span class="chip">NEW</span>'}</div>`).join('') : '<div class="empty">Your first episode appears the morning after your first day of real actions.</div>'}

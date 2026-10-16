@@ -257,3 +257,35 @@ details.fold>summary small{order:2}
 details.fold>summary::after{order:3}
 details.fold>summary{width:100%}
 details.fold>summary:not(:has(small))::after{margin-left:auto}
+
+/* ── character page and storybooks ── */
+.char-portrait{height:360px;width:calc(100% - 4px);margin:4px 2px 0}
+.char-portrait.portrait-slot{display:grid;place-items:center}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.thumb{width:72px;height:96px;padding:0;border:0;background:var(--field,#120e2b);box-shadow:0 0 0 2px var(--line);overflow:hidden;display:grid;place-items:center;font-size:24px;border-radius:2px}
+.thumb img{width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.thumb.on{box-shadow:0 0 0 3px var(--acc)}
+.bookrow .bkthumb{width:56px;height:72px;flex:none;background:var(--field,#120e2b);box-shadow:0 0 0 2px var(--line);display:grid;place-items:center;font-size:28px;overflow:hidden}
+.bookrow .bkthumb img{width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+#book{--b-top:#2f45c9;--b-bot:#101a66;--b-dark:#04051a;--b-line:#e8ecff;--b-acc:#ffd23f;--b-dim:#d2d9ff;position:fixed;inset:0;z-index:91;display:flex;flex-direction:column;color:#fff;
+  background:radial-gradient(120% 70% at 50% 20%,#1a2380 0%,#080a2a 62%,#04051a 100%);padding:calc(8px + var(--safe-t)) 10px calc(10px + var(--safe-b))}
+#book.hidden{display:none}
+.bk-top{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px}
+.bk-top button,.bk-nav button{min-height:48px;min-width:48px;padding:0 14px;background:var(--b-dark);color:#fff;font:16px var(--font-ui,monospace);box-shadow:inset 0 0 0 2px var(--b-line);border-radius:2px}
+.bk-title{flex:1;text-align:center;color:var(--b-acc);font:15px var(--font-ui,monospace);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bk-page{flex:1;min-height:0;overflow:auto;margin:8px 2px;background:linear-gradient(180deg,var(--b-top),var(--b-bot));border-radius:4px;box-shadow:0 0 0 2px var(--b-dark),inset 0 0 0 2px var(--b-line),inset 0 0 0 4px var(--b-dark);padding:18px 16px;outline:none}
+.bk-nav{display:flex;align-items:center;justify-content:space-between;gap:8px}.bk-nav span{color:var(--b-dim);font:15px var(--font-ui,monospace)}.bk-nav button:disabled{opacity:.4}
+.bk-kicker{color:var(--b-acc);font:13px var(--font-ui,monospace);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.bk-cover,.bk-ep,.bk-end{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;min-height:100%;justify-content:center}
+.bk-cover h1,.bk-end h2,.bk-ep h2{margin:6px 0;font:700 1.5rem var(--font-ui,system-ui);color:var(--b-acc)}
+.bk-sub{color:var(--b-dim)}.bk-emoji{font-size:96px}.bk-dice{color:var(--b-dim);font-size:.95rem}.bk-glyphs{font-size:30px;letter-spacing:.2em}
+.bk-page .portrait{height:46vh;max-height:420px;width:100%;border-radius:0;box-shadow:0 0 0 2px var(--b-dark),0 0 0 4px var(--b-line)}
+.bk-text{display:flex;flex-direction:column;justify-content:center;min-height:100%}
+.bk-text p{font:19px/1.65 Georgia,"Times New Roman",serif;margin:8px 0}.bk-tease,.bk-end .bk-tease{font-style:italic;color:var(--b-dim)}
+#book-print{display:none}
+@media print{
+  body.printing-book>*:not(#book-print){display:none!important}
+  body.printing-book #book-print{display:block!important;background:#fff;color:#000;font:12pt/1.5 Georgia,"Times New Roman",serif;padding:0}
+  #book-print .pp{page-break-after:always;break-after:page}#book-print img{max-width:100%;max-height:55vh;display:block;margin:10px auto}
+  #book-print h1,#book-print h2{font-family:Georgia,serif}
+}

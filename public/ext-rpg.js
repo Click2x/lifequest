@@ -72,7 +72,7 @@ function popNum(text, kind = 'xp') {
 // ── Menu: the pause-screen home for everything that is not in the bottom bar ──
 function viewMenu() {
   const t = today(), c = sagaCheck(t), odds = Math.round(sagaOdds(c.mod, c.bonus, c.dc) * 100), best = typeof bestStreak === 'function' ? bestStreak() : 0;
-  const rows = [['hero', '🦸', 'Status', 'Stats, achievements, rewards'], ['focus', '🎯', 'Dojo', 'Focus duels'], ['squad', '🏰', 'Guild', 'Party, raids, league'], ['coach', '💬', 'Sage', 'Coach and journal'], ['saga', '📜', 'Chronicle', 'Every episode so far'], ['config', '⚙️', 'Config', 'Look, sound, reminders, backup']];
+  const rows = [['character', '🧑‍🎤', 'Character', 'Portrait, backstory, tale so far'], ['books', '📚', 'Storybooks', 'One book per week, readable and printable'], ['hero', '🦸', 'Status', 'Stats, achievements, rewards'], ['focus', '🎯', 'Dojo', 'Focus duels'], ['squad', '🏰', 'Guild', 'Party, raids, league'], ['coach', '💬', 'Sage', 'Coach and journal'], ['saga', '📜', 'Chronicle', 'Episodes and tonight\'s forecast'], ['config', '⚙️', 'Config', 'Look, sound, reminders, backup']];
   return `<div class="card"><div class="win-title">COMMAND</div>
     ${rows.map(([k, e, n, d]) => `<div class="task menurow" data-act="tab" data-v="${k}"><div class="em">${e}</div><div class="grow"><div class="nm">${n}</div><div class="sm dim">${d}</div></div><span class="dim">▶</span></div>`).join('')}
     <div class="task menurow" data-act="export"><div class="em">💾</div><div class="grow"><div class="nm">Save</div><div class="sm dim">Download a backup file</div></div><span class="dim">▶</span></div></div>

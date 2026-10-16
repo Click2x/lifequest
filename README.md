@@ -33,6 +33,8 @@ An installable phone app (PWA) that turns your life into an RPG. No accounts, no
 | **Guild (Squad)** | Opt-in friend leaderboard, cheers, shared raid bosses, squad challenges, monthly league |
 | **Sage (Coach)** | A gentle coach with tips and a daily journal prompt, grounded in habit research (see [docs/RESEARCH.md](docs/RESEARCH.md)) |
 | **Status (Hero)** | Six stats, achievements, rewards you define yourself, and the Look settings (16-bit or Classic, Night or Daylight) |
+| **Character** | Your hero's portrait (the newest AI picture, or one you pick), tale so far, and the look and backstory that shape the stories |
+| **Storybooks** | Each week becomes a book: cover, episode title pages, readable story pages and an end page. Read it in the app or print it / save it as a PDF |
 | **The Saga** | Every morning, yesterday's real actions become a D&D-style episode with a d20 roll against the weekly boss |
 
 Everything runs on your own machine, saves instantly on the phone, and works offline.

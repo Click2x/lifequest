@@ -1058,7 +1058,7 @@ const scrollChat = () => setTimeout(() => window.scrollTo({ top: document.body.s
 // ───────────────────────── views ─────────────────────────
 let tab = 'today';
 const NAV = [['today', '🏠', 'Town'], ['quests', '🗺️', 'Quests'], ['saga', '⚔️', 'Saga'], ['money', '💰', 'Shop'], ['menu', '☰', 'Menu']];
-const MENU_TABS = ['hero', 'focus', 'squad', 'coach', 'config'];       // reached from the Menu; the bar highlights Menu for these
+const MENU_TABS = ['hero', 'focus', 'squad', 'coach', 'config', 'character', 'books'];       // reached from the Menu; the bar highlights Menu for these
 
 function hud() {
   const l = level(), cur = S.xp - xpFor(l), need = xpFor(l + 1) - xpFor(l);
@@ -1385,7 +1385,7 @@ function render() {
   if (document.getElementById('ob-name')) { modalLocked = false; closeModal(); }     // the synced profile arrived while the welcome screen was open
   settleStake();
   processMoneyMonth();
-  const views = { today: viewToday, quests: viewQuests, money: viewMoney, focus: viewFocus, squad: viewSquad, coach: viewCoach, hero: viewHero, saga: viewSaga, menu: viewMenu, config: viewConfig };
+  const views = { today: viewToday, quests: viewQuests, money: viewMoney, focus: viewFocus, squad: viewSquad, coach: viewCoach, hero: viewHero, saga: viewSaga, menu: viewMenu, config: viewConfig, character: viewCharacter, books: viewBooks };
   const keep = document.activeElement?.id === 'chatin' ? $('#chatin').value : '';
   const lit = NAV.some(n => n[0] === tab) ? tab : 'menu', back = MENU_TABS.includes(tab) ? '<button class="btn sm ghost backbtn" data-act="tab" data-v="menu">◀ Menu</button>' : '';
   $('#app').innerHTML = hud() + back + foldSections(views[tab](), FOLD[tab], tab) +
