@@ -122,8 +122,18 @@ async function btRollDie(sc) {
   if (o === 'fumble') await btSay(sc, `${name} trips over a root and laughs it off.`);
 }
 
+// long paragraphs become several short pages (about 3 sentences, 230 characters) so nothing needs scrolling
+function btPages(story) {
+  const out = [];
+  for (const p of String(story || '').split('\n').filter(x => x.trim())) {
+    const sents = p.match(/[^.!?]+[.!?]+["')”]*\s*|[^.!?]+$/g) || [p]; let cur = '';
+    for (const s of sents) { if (cur && (cur + s).length > 230) { out.push(cur.trim()); cur = ''; } cur += s; }
+    if (cur.trim()) out.push(cur.trim());
+  }
+  return out;
+}
 async function btStory(sc) {
-  const { ep, d, chk, date } = sc, pages = String(ep.story || '').split('\n').filter(x => x.trim());
+  const { ep, d, chk, date } = sc, pages = btPages(ep.story);
   const portrait = sagaImgTag(date, 240);
   btQ('#bt-msg').classList.add('bt-story');
   for (let i = 0; i < pages.length; i++) {

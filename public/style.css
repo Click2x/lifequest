@@ -138,7 +138,7 @@ nav button.on{color:#fff}nav button.on span{filter:none;transform:translateY(-2p
 nav button{font-size:.62rem}nav button span{font-size:20px}
 
 /* saga portraits */
-.portrait{width:100%;object-fit:cover;object-position:top;border-radius:14px;display:block}
+.portrait{width:100%;object-fit:cover;object-position:50% 36%;border-radius:14px;display:block}
 .portrait-slot{display:grid;place-items:center;text-align:center;border-radius:14px;background:linear-gradient(135deg,#2a2257,#1f1942);color:var(--dim)}
 
 /* bottom bar extras */
