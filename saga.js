@@ -1,6 +1,6 @@
 'use strict';
 // The Saga: a daily anime/D&D episode about your hero, written by a local LLM (Ollama) and illustrated by a local
-// Stable Diffusion (AUTOMATIC1111 API). Everything stays on your machine. Jobs run one at a time so the GPU is never shared.
+// Stable Diffusion (AUTOMATIC1111 API) or ComfyUI (imageBackend: "comfy"). Everything stays on your machine. Jobs run one at a time so the GPU is never shared.
 const fs = require('fs');
 const path = require('path');
 const { spawn, execFile } = require('child_process');
@@ -10,7 +10,7 @@ const BLOCK = ['nsfw', 'nude', 'naked', 'explicit', 'porn', 'erotic', 'lingerie'
 const clean = s => { let t = String(s || '').toLowerCase(); for (const w of BLOCK) t = t.split(w).join(''); return t.replace(/\s+/g, ' ').trim().slice(0, 300); };
 
 function create(cfg, dataDir) {
-  const S = { child: null, weStarted: false, stopTimer: null, queue: Promise.resolve(), jobs: new Map(), episodesToday: new Map() };
+  const S = { child: null, weStarted: false, cchild: null, cStarted: false, stopTimer: null, queue: Promise.resolve(), jobs: new Map(), episodesToday: new Map() };
   const enqueue = fn => { const p = S.queue.then(fn, fn); S.queue = p.catch(() => { }); return p; };
   const sagaDir = path.join(dataDir, 'saga');
 
@@ -47,7 +47,12 @@ function create(cfg, dataDir) {
     } catch { }
   }
   async function sdUp() { try { return (await fetch(cfg.sdUrl + '/sdapi/v1/options', { signal: AbortSignal.timeout(2500) })).ok; } catch { return false; } }
-  async function status() { const [llm, sd] = await Promise.all([llmUp(), sdUp()]); return { llm, model: cfg.storyModel, sd, canLaunchSd: !!cfg.sdDir && fs.existsSync(path.join(cfg.sdDir || '', 'webui-user.bat')), sdModel: cfg.sdModel }; }
+  const useComfy = () => cfg.imageBackend === 'comfy';
+  async function status() {
+    const [llm, up] = await Promise.all([llmUp(), useComfy() ? comfyUp() : sdUp()]);
+    // "sd"/"canLaunchSd" mean "the image painter" so the app needs no change whichever backend is configured
+    return { llm, model: cfg.storyModel, sd: up, canLaunchSd: useComfy() ? canLaunchComfy() : (!!cfg.sdDir && fs.existsSync(path.join(cfg.sdDir || '', 'webui-user.bat'))), sdModel: useComfy() ? cfg.comfyModel : cfg.sdModel, backend: useComfy() ? 'comfy' : 'sd' };
+  }
 
   // ── the storyteller ──
   const SYSTEM = [
@@ -95,10 +100,14 @@ function create(cfg, dataDir) {
 
   // ── Stable Diffusion: start on demand, stop when idle (only if we started it) ──
   function killTree(pid) { if (process.platform === 'win32') execFile('taskkill', ['/PID', String(pid), '/T', '/F'], () => { }); else try { process.kill(-pid); } catch { } }
+  // only ever stops a painter that THIS server started; one you started yourself is left alone
   function armStop() {
     clearTimeout(S.stopTimer);
-    if (!S.weStarted) return;
-    S.stopTimer = setTimeout(() => { if (S.child) { killTree(S.child.pid); S.child = null; S.weStarted = false; console.log('Saga: Stable Diffusion stopped (idle)'); } }, (cfg.sdIdleMinutes || 10) * 60000);
+    if (!S.weStarted && !S.cStarted) return;
+    S.stopTimer = setTimeout(() => {
+      if (S.child && S.weStarted) { killTree(S.child.pid); S.child = null; S.weStarted = false; console.log('Saga: Stable Diffusion stopped (idle)'); }
+      if (S.cchild && S.cStarted) { killTree(S.cchild.pid); S.cchild = null; S.cStarted = false; console.log('Saga: ComfyUI stopped (idle)'); }
+    }, (cfg.sdIdleMinutes || 10) * 60000);
   }
   async function ensureSd() {
     if (await sdUp()) { armStop(); return; }
@@ -120,14 +129,77 @@ function create(cfg, dataDir) {
     }                                                                                    // up to ~5 minutes for the first load
     throw new Error('Stable Diffusion did not start in time (see data/saga/sd.log)');
   }
+  // ── ComfyUI: same idea, started on demand from its own folder (loopback only) ──
+  async function comfyUp() { try { return (await fetch(cfg.comfyUrl + '/system_stats', { signal: AbortSignal.timeout(2500) })).ok; } catch { return false; } }
+  const comfyPy = () => path.join(cfg.comfyDir || '', 'venv', 'Scripts', 'python.exe');
+  const canLaunchComfy = () => !!cfg.comfyDir && fs.existsSync(comfyPy()) && fs.existsSync(path.join(cfg.comfyDir, 'main.py'));
+  const comfyPort = () => { try { return new URL(cfg.comfyUrl).port || '8188'; } catch { return '8188'; } };
+  async function ensureComfy() {
+    if (await comfyUp()) { armStop(); return; }
+    if (!canLaunchComfy()) throw new Error('ComfyUI is not running and comfyDir is not configured');
+    if (!S.cchild) {
+      console.log('Saga: starting ComfyUI…');
+      fs.mkdirSync(sagaDir, { recursive: true });
+      const log = fs.openSync(path.join(sagaDir, 'comfy.log'), 'w');
+      S.cchild = spawn(comfyPy(), ['main.py', '--listen', '127.0.0.1', '--port', comfyPort(), '--disable-auto-launch'], { cwd: cfg.comfyDir, windowsHide: true, stdio: ['ignore', log, log] });
+      S.cchild.on('exit', code => { S.cchild = null; S.cStarted = false; console.log('Saga: ComfyUI process exited (' + code + ')'); });
+      S.cStarted = true;
+    }
+    for (let i = 0; i < 100; i++) {
+      await sleepMs(3000);
+      if (await comfyUp()) { armStop(); return; }
+      if (!S.cchild) throw new Error('ComfyUI exited while starting (see data/saga/comfy.log)');
+    }
+    throw new Error('ComfyUI did not start in time (see data/saga/comfy.log)');
+  }
+  // a minimal text-to-image workflow that names exactly one checkpoint and no LoRAs; PreviewImage keeps results in ComfyUI's temp folder
+  async function comfyRender(job) {
+    const base = cfg.comfyUrl, model = cfg.comfyModel, J = { 'Content-Type': 'application/json' };
+    const info = await (await fetch(base + '/object_info/CheckpointLoaderSimple', { signal: AbortSignal.timeout(15000) })).json();
+    const spec = info?.CheckpointLoaderSimple?.input?.required?.ckpt_name || [], names = Array.isArray(spec[0]) ? spec[0] : (spec[1]?.options || []);
+    if (!names.includes(model)) throw new Error('ComfyUI does not list the checkpoint "' + model + '"');
+    const seed = job.seed >= 0 ? job.seed : Math.floor(Math.random() * 4294967296);
+    const wf = {
+      1: { class_type: 'CheckpointLoaderSimple', inputs: { ckpt_name: model } },
+      2: { class_type: 'CLIPTextEncode', inputs: { text: job.prompt, clip: ['1', 1] } },
+      3: { class_type: 'CLIPTextEncode', inputs: { text: job.negative, clip: ['1', 1] } },
+      4: { class_type: 'EmptyLatentImage', inputs: { width: 832, height: 1216, batch_size: 1 } },
+      5: { class_type: 'KSampler', inputs: { seed, steps: cfg.comfySteps || 28, cfg: cfg.comfyCfg || 5, sampler_name: 'euler_ancestral', scheduler: 'normal', denoise: 1, model: ['1', 0], positive: ['2', 0], negative: ['3', 0], latent_image: ['4', 0] } },
+      6: { class_type: 'VAEDecode', inputs: { samples: ['5', 0], vae: ['1', 2] } },
+      7: { class_type: 'PreviewImage', inputs: { images: ['6', 0] } },
+    };
+    const r = await fetch(base + '/prompt', { method: 'POST', headers: J, body: JSON.stringify({ prompt: wf, client_id: 'lifequest-saga' }), signal: AbortSignal.timeout(30000) });
+    if (!r.ok) throw new Error('ComfyUI rejected the workflow: ' + (await r.text()).slice(0, 200));
+    const { prompt_id } = await r.json(), end = Date.now() + 900000;
+    while (Date.now() < end) {
+      await sleepMs(1500);
+      const e = (await (await fetch(base + '/history/' + prompt_id, { signal: AbortSignal.timeout(15000) })).json())[prompt_id];
+      if (!e) continue;
+      if (e.status?.status_str === 'error') throw new Error('ComfyUI failed to render (see its console)');
+      const im = e.outputs?.[7]?.images?.[0];
+      if (im) {
+        const g = await fetch(base + '/view?filename=' + encodeURIComponent(im.filename) + '&subfolder=' + encodeURIComponent(im.subfolder || '') + '&type=' + encodeURIComponent(im.type || 'temp'), { signal: AbortSignal.timeout(30000) });
+        if (!g.ok) throw new Error('ComfyUI would not return the image (' + g.status + ')');
+        return Buffer.from(await g.arrayBuffer());
+      }
+    }
+    throw new Error('ComfyUI took too long');
+  }
   const imgPath = (pid, date) => path.join(sagaDir, pid, date + '.png');
   async function paint(job) {
     await unloadLlm();
-    if (!(await sdUp())) await waitForGpu(job, cfg.sdMinFreeMb || 9000);
+    const comfy = useComfy();
+    if (!(comfy ? await comfyUp() : await sdUp())) await waitForGpu(job, cfg.sdMinFreeMb || 9000);
     job.status = 'painting';
-    await ensureSd();
-    clearTimeout(S.stopTimer);                       // never shut SD down while it is rendering; the idle clock restarts when the job ends
+    await (comfy ? ensureComfy() : ensureSd());
+    clearTimeout(S.stopTimer);                       // never shut the painter down while it is rendering; the idle clock restarts when the job ends
     try {
+      if (comfy) {
+        const png = await comfyRender(job);
+        fs.mkdirSync(path.join(sagaDir, job.pid), { recursive: true });
+        fs.writeFileSync(imgPath(job.pid, job.date), png);
+        return;
+      }
       const body = {
         prompt: job.prompt, negative_prompt: job.negative, steps: cfg.sdSteps || 28, cfg_scale: 6.5, width: 832, height: 1216, sampler_name: 'Euler a', seed: job.seed,
         override_settings: cfg.sdModel ? { sd_model_checkpoint: cfg.sdModel } : {}, override_settings_restore_afterwards: false,
@@ -143,7 +215,12 @@ function create(cfg, dataDir) {
   // sdStyle: "cinematic" (default, the tested look) or "anime" (flat-colour cel-shaded key art; pushes realistic checkpoints away from photo looks)
   const ANIME_POS = ['anime screencap', 'anime coloring', 'flat color', '2d illustration', 'clean lineart', 'thick outlines', 'cel shading', 'vibrant colors', 'studio anime key visual'];
   const ANIME_NEG = 'realistic, photorealistic, photo, 3d, 3d render, cgi, skin pores, film grain, depth of field, bokeh, volumetric light, lens flare, hdr';
+  // Animagine XL 4.0 (via ComfyUI) wants Danbooru-style tags: subject, rating, then quality tags
   function compose({ look, gear, scene, mood }) {
+    if (useComfy()) {
+      const positive = ['solo', clean(look), clean(gear), clean(scene), clean(mood), 'safe', 'fantasy adventure', 'dynamic composition', 'anime screencap', 'cel shading', 'vibrant colors', 'masterpiece', 'high score', 'great score', 'absurdres'].filter(Boolean).join(', ');
+      return { positive, negative: 'lowres, bad anatomy, bad hands, text, error, missing finger, extra digits, fewer digits, cropped, worst quality, low quality, low score, bad score, average score, signature, watermark, username, blurry, nsfw, nudity, explicit, gore, blood, realistic, photorealistic, 3d' };
+    }
     if (cfg.sdStyle === 'anime') {
       const positive = ['score_9', 'score_8_up', 'score_7_up', 'source_anime', 'rating_safe', ...ANIME_POS, 'dynamic composition', 'fantasy adventure', clean(look), clean(gear), clean(scene), clean(mood)].filter(Boolean).join(', ');
       return { positive, negative: 'score_6, score_5, score_4, source_pony, source_furry, nsfw, nudity, explicit, gore, blood, text, watermark, signature, logo, lowres, bad anatomy, extra fingers, deformed, ' + ANIME_NEG };
@@ -170,6 +247,6 @@ function create(cfg, dataDir) {
   }
   const episodeJob = (pid, date) => S.jobs.get('ep|' + pid + '|' + date);
   const hasImage = (pid, date) => fs.existsSync(imgPath(pid, date));
-  return { status, startEpisode, episodeJob, allow, startImage, jobFor, hasImage, imgPath, stop: () => { if (S.child) killTree(S.child.pid); } };
+  return { status, startEpisode, episodeJob, allow, startImage, jobFor, hasImage, imgPath, stop: () => { if (S.child && S.weStarted) killTree(S.child.pid); if (S.cchild && S.cStarted) killTree(S.cchild.pid); } };
 }
 module.exports = { create };

@@ -60,7 +60,9 @@ const pick = (env, key, dflt) => process.env[env] || fileCfg[key] || dflt;
 const saga = sagaLib.create({
   storyUrl: pick('STORY_URL', 'storyUrl', 'http://127.0.0.1:11434'), storyModel: pick('STORY_MODEL', 'storyModel', 'nova-samantha-v1'),
   sdUrl: pick('SD_URL', 'sdUrl', 'http://127.0.0.1:7860'), sdDir: pick('SD_DIR', 'sdDir', ''), sdModel: pick('SD_MODEL', 'sdModel', ''),
-  sdIdleMinutes: +pick('SD_IDLE_MINUTES', 'sdIdleMinutes', 10), sdSteps: +pick('SD_STEPS', 'sdSteps', 28), sdStyle: pick('SD_STYLE', 'sdStyle', 'cinematic'), dailyLimit: +pick('SAGA_DAILY_EPISODES', 'dailyEpisodes', 4), dailyImages: +pick('SAGA_DAILY_IMAGES', 'dailyImages', 6),
+  sdIdleMinutes: +pick('SD_IDLE_MINUTES', 'sdIdleMinutes', 10), sdSteps: +pick('SD_STEPS', 'sdSteps', 28), sdStyle: pick('SD_STYLE', 'sdStyle', 'cinematic'),
+  imageBackend: pick('IMAGE_BACKEND', 'imageBackend', 'sd'), comfyUrl: pick('COMFY_URL', 'comfyUrl', 'http://127.0.0.1:8188'), comfyDir: pick('COMFY_DIR', 'comfyDir', ''), comfyModel: pick('COMFY_MODEL', 'comfyModel', 'animagine-xl-4.0-opt.safetensors'),
+  comfySteps: +pick('COMFY_STEPS', 'comfySteps', 28), comfyCfg: +pick('COMFY_CFG', 'comfyCfg', 5), dailyLimit: +pick('SAGA_DAILY_EPISODES', 'dailyEpisodes', 4), dailyImages: +pick('SAGA_DAILY_IMAGES', 'dailyImages', 6),
 }, DATA_DIR);
 const PUSH_FILE = path.join(DATA_DIR, 'push.json');
 const pushDB = () => { try { const d = JSON.parse(fs.readFileSync(PUSH_FILE, 'utf8')); return { subs: d.subs || {}, queue: d.queue || {}, sent: d.sent || {} }; } catch { return { subs: {}, queue: {}, sent: {} }; } };

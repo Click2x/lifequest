@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LifeQuest Town redesign preview</title>
+<style>
+/* Tokens. Contrast (WCAG, computed): text on window 7.5-11.8, dim on window >= 5.37, gold on window >= 5.17 */
+:root{
+  --bg:#08091a; --win-top:#2f45c9; --win-bot:#101a66; --line:#e8ecff; --edge:#04051a;
+  --txt:#ffffff; --dim:#d2d9ff; --gold:#ffd23f; --good:#5cf28a; --bad:#ff8a9a; --btn:#04051a;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px;
+  --t-cap:13px; --t-body:16px; --t-lead:18px; --t-title:22px;
+  --font-ui:"Pixelify Sans",ui-monospace,"Cascadia Mono","Roboto Mono",monospace; --font-text:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box} body{margin:0;background:#000;font:var(--t-body)/1.45 var(--font-text);color:var(--txt);display:grid;place-items:start center;min-height:100vh;padding:16px}
+.phone{width:375px;min-height:760px;background:var(--bg);position:relative;padding:var(--s3) var(--s3) 96px;border-radius:24px}
+.win{background:linear-gradient(180deg,var(--win-top),var(--win-bot));border-radius:4px;box-shadow:0 0 0 2px var(--edge),inset 0 0 0 2px var(--line),inset 0 0 0 4px var(--edge);padding:var(--s3) var(--s4);margin:0 2px var(--s3)}
+h2{font:700 var(--t-cap)/1 var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:var(--s4) 0 var(--s2) 4px;display:flex;justify-content:space-between}
+h2 small{color:var(--dim);letter-spacing:0;font:var(--t-cap) var(--font-ui)}
+.dim{color:var(--dim)} .num{font-family:var(--font-ui)}
+/* 1. status strip: one line, 56px */
+.strip{display:flex;align-items:center;gap:var(--s3);min-height:56px;padding:var(--s2) var(--s4)}
+.av{width:40px;height:40px;background:var(--edge);box-shadow:inset 0 0 0 2px var(--line);display:grid;place-items:center;font-size:22px}
+.strip .who{flex:1;min-width:0}.strip b{font-family:var(--font-ui)}
+.bar{height:10px;background:var(--edge);box-shadow:0 0 0 2px var(--line);margin-top:6px}.bar i{display:block;height:100%;background:var(--gold);-webkit-mask:repeating-linear-gradient(90deg,#000 0 5px,transparent 5px 6px);mask:repeating-linear-gradient(90deg,#000 0 5px,transparent 5px 6px)}
+.chip{background:var(--edge);color:var(--gold);font:var(--t-cap) var(--font-ui);padding:6px 10px;box-shadow:inset 0 0 0 2px var(--line)}
+/* 2. rituals: the main job, first, 56px rows with 44px check targets */
+.row{display:flex;align-items:center;gap:var(--s3);min-height:56px;cursor:pointer;border:0;background:none;color:inherit;width:100%;text-align:left;font:inherit;padding:0;border-top:1px solid rgb(232 236 255/.25)}
+.row:first-of-type{border-top:0}
+.chk{width:44px;height:44px;background:var(--edge);box-shadow:inset 0 0 0 2px var(--line);display:grid;place-items:center;font-size:22px;flex:none;color:var(--edge)}
+.row.done .chk{background:var(--good)}.row.done .nm{text-decoration:line-through;opacity:.8}
+.nm{flex:1;font-size:var(--t-lead)}.tag{font:var(--t-cap) var(--font-ui);color:var(--dim)}
+.moods{display:flex;gap:var(--s2);margin-top:var(--s3)}.moods button{flex:1;min-height:48px;font-size:24px;background:var(--btn);border:0;color:inherit;box-shadow:inset 0 0 0 2px var(--line)}
+/* 3. saga: ONE window, two tappable rows (replaces the episode card + forecast card) */
+.link{display:flex;align-items:center;gap:var(--s3);min-height:64px;width:100%;background:none;border:0;color:inherit;font:inherit;text-align:left;padding:0;cursor:pointer}
+.link+.link{border-top:1px solid rgb(232 236 255/.25)}
+.link .big{font-size:28px;width:44px;text-align:center}.link .grow{flex:1;min-width:0}.link .t{font-size:var(--t-lead);font-weight:600}.link .go{font:var(--t-lead) var(--font-ui);color:var(--gold)}
+.new{background:var(--bad);color:#2a0008;font:700 11px var(--font-ui);padding:2px 6px;margin-left:6px}
+/* 4. everything else collapses */
+details{margin:0 2px var(--s3)} summary{list-style:none;min-height:48px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font:var(--t-cap) var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--gold);padding:0 4px}
+summary::-webkit-details-marker{display:none}
+details .win{margin-top:var(--s2)}
+/* bar */
+nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:var(--edge);border-top:2px solid var(--line);border-radius:0 0 24px 24px;padding:0 0 6px}
+nav button{flex:1;min-height:64px;background:none;border:0;color:var(--dim);font:var(--t-cap) var(--font-ui);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+nav button span{font-size:22px} nav .on{color:var(--gold)} nav .saga{margin-top:-14px;background:linear-gradient(180deg,var(--win-top),var(--win-bot));box-shadow:0 0 0 2px var(--edge),inset 0 0 0 2px var(--line);color:#fff}
+:focus-visible{outline:2px dashed var(--gold);outline-offset:2px}
+</style></head><body>
+<div class="phone">
+  <div class="win strip"><div class="av">🙂</div><div class="who"><b>Tester</b> <span class="dim">Lv 2</span><div class="bar"><i style="width:45%"></i></div></div><span class="chip">🪙 34</span></div>
+
+  <h2>Today's rituals <small id="count">1/4</small></h2>
+  <div class="win" id="rituals">
+    <button class="row done" role="checkbox" aria-checked="true"><span class="chk">✓</span><span class="nm">Drink water</span><span class="tag">BOD</span></button>
+    <button class="row" role="checkbox" aria-checked="false"><span class="chk"></span><span class="nm">Walk 20 min</span><span class="tag">BOD</span></button>
+    <button class="row" role="checkbox" aria-checked="false"><span class="chk"></span><span class="nm">Journal</span><span class="tag">WIS</span></button>
+    <button class="row" role="checkbox" aria-checked="false"><span class="chk"></span><span class="nm">Tidy up 10 min</span><span class="tag">INT</span></button>
+    <div class="dim" style="margin-top:var(--s3);font-size:var(--t-cap)">How are you today? <span class="dim">(+10 XP)</span></div>
+    <div class="moods" role="group" aria-label="Mood"><button aria-label="Rough">😫</button><button aria-label="Low">😕</button><button aria-label="Okay">🙂</button><button aria-label="Good">😀</button><button aria-label="Great">🤩</button></div>
+  </div>
+
+  <h2>The Saga <small>Hydra of Habits</small></h2>
+  <div class="win">
+    <button class="link"><span class="big">📖</span><span class="grow"><span class="t">The Dawn of Discipline<span class="new">NEW</span></span><br><span class="dim" style="font-size:var(--t-cap)">Episode 2 · success</span></span><span class="go">▶</span></button>
+    <button class="link"><span class="big">⚔️</span><span class="grow"><span class="t">Tonight: <span class="num" id="odds">45%</span></span><br><span class="dim" style="font-size:var(--t-cap)" id="hint">1 more ritual lifts it to 50%</span></span><span class="go">▶</span></button>
+  </div>
+
+  <details>
+    <summary>More today <span class="dim">3</span></summary>
+    <div class="win">
+      <button class="link"><span class="big">⭐</span><span class="grow"><span class="t">Finish tax form</span><br><span class="dim" style="font-size:var(--t-cap)">Next quest · +50 XP</span></span><span class="go">▶</span></button>
+      <button class="link"><span class="big">🧾</span><span class="grow"><span class="t">Rent due Fri</span><br><span class="dim" style="font-size:var(--t-cap)">Bill</span></span><span class="go">▶</span></button>
+      <button class="link"><span class="big">🧙</span><span class="grow"><span class="t">Sage</span><br><span class="dim" style="font-size:var(--t-cap)">A 5-minute walk beats another coffee.</span></span><span class="go">▶</span></button>
+    </div>
+  </details>
+
+  <nav><button class="on"><span>🏠</span>Town</button><button><span>🗺️</span>Quests</button><button class="saga"><span>⚔️</span>Saga</button><button><span>💰</span>Shop</button><button><span>☰</span>Menu</button></nav>
+</div>
+<script>
+// demo only: ticking a ritual updates the count, bar and the odds line (5% per step, as in the real rules)
+const rows=[...document.querySelectorAll('#rituals .row')];
+function sync(){const n=rows.filter(r=>r.classList.contains('done')).length; document.getElementById('count').textContent=n+'/'+rows.length;
+  const odds=Math.min(95,35+n*5+(n===rows.length?10:0)); document.getElementById('odds').textContent=odds+'%';
+  document.getElementById('hint').textContent=n===rows.length?'Perfect day! Odds maxed':(rows.length-n)+' more ritual'+(rows.length-n>1?'s':'')+' lifts it';}
+rows.forEach(r=>r.addEventListener('click',()=>{const d=r.classList.toggle('done');r.setAttribute('aria-checked',d);r.querySelector('.chk').textContent=d?'✓':'';sync();}));
+sync();
+</script></body></html>

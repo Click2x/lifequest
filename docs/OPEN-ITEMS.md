@@ -41,6 +41,7 @@ Things we deliberately parked or could not verify. Newest first. Tell me which t
 - Not in the scene yet: a "Gold gained" line (no per-day gold record exists), the sound-effect set beyond blips, a portrait 16-bit filter.
 - Phase 6 not yet exercised on real data: Guild party gauges (needs a joined squad), the weekly-boss claim hit with a real claim, and the chiptune sounds on a phone speaker. Not done from the plan: Shop split into Treasury/Merchant, Dojo ring restyle, typewriter on Sage replies, event-log window on Town.
 
-## Anime art style (in progress)
-- Built, untested on GPU: `sdStyle: "anime"` option (stronger cel-shading tags, realism terms in the negative prompt) and `tools/style-test.js`, which renders the same hero with a fixed seed across every installed checkpoint in both styles and writes a contact sheet. Waiting for a time when the GPU and the WebUI are free (the owner was using Nova and Stable Diffusion for other projects).
-- Installed checkpoints are all realism-leaning (CyberRealistic Pony, Crealism, Graam XL, Omnigen). If the prompt-only approach is not enough, the next step is downloading an anime checkpoint (needs approval) and/or a hero LoRA for consistent faces.
+## Anime art style
+- Done: Animagine XL 4.0 (Opt) downloaded (6.94 GB, verified byte-for-byte against the source) into the shared checkpoint folder, and the Saga paints through ComfyUI (`imageBackend: comfy`) with a minimal workflow that names only that checkpoint and no LoRAs. First real render: clean cel-shaded anime art of the hero, family-safe. The WebUI backend and `tools/style-test.js` remain as alternatives.
+- Still open: character consistency (the face changes daily; a hero LoRA or IP-Adapter would fix it), a second look at prompts for the hero look text, and video (the Wan 2.2 models already in ComfyUI could animate the still; not started).
+- Note: ComfyUI also contains unrelated adult-content LoRAs for another project. The Saga workflow never loads them.
