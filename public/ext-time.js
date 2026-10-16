@@ -213,6 +213,7 @@ navigator.serviceWorker?.addEventListener('message', e => {
   const m = e.data || {};
   if (m.snooze) { snoozeReminder(m.snooze.tag, m.snooze.title, m.snooze.body); toast('Snoozed for 10 minutes 😴'); }
   if (m.toast) toast(m.toast);
+  if (m.go) { try { const g = new URL(m.go, location.origin).searchParams.get('go'); if (g && typeof tab !== 'undefined') { tab = g; render(); } } catch { } }
 });
 // reminder candidates for any date (used by the local ticker and by server push scheduling)
 function reminderEventsFor(d) {

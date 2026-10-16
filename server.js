@@ -252,7 +252,7 @@ async function api(req, res, url) {
     }
     if (op === 'schedule' && req.method === 'POST') {
       const { items = [] } = JSON.parse(await readBody(req, 100 * 1024)), now = Date.now(), done = db.sent[pid] || {};
-      db.queue[pid] = items.slice(0, 200).map(i => ({ id: str(i.id, 80), at: Math.round(+i.at), title: str(i.title, 80), body: str(i.body, 160), tag: str(i.tag, 80) }))
+      db.queue[pid] = items.slice(0, 200).map(i => ({ id: str(i.id, 80), at: Math.round(+i.at), title: str(i.title, 80), body: str(i.body, 160), tag: str(i.tag, 80), url: /^\/[\w?=&.-]*$/.test(String(i.url || '')) ? String(i.url).slice(0, 80) : '/', badge: Math.max(0, Math.min(99, +i.badge || 0)) }))
         .filter(i => i.id && i.at > now - 3600e3 && i.at < now + 72 * 3600e3 && !done[i.id]);
       pushSave(db); return send(res, 200, { ok: true, queued: db.queue[pid].length });
     }
@@ -347,8 +347,11 @@ function serveStatic(req, res, url) {
 
 // /phone: a QR page for signing a phone in. It shows the access token, so it is served ONLY to this PC itself
 // (loopback, and never through a reverse proxy such as `tailscale serve`, which adds forwarding headers).
+// optional public HTTPS address (e.g. `tailscale serve`): LIFEQUEST_PUBLIC_URL or "publicUrl" in data/config.json. Installing, offline mode and closed-app push need https.
+const PUBLIC_URL = String(process.env.LIFEQUEST_PUBLIC_URL || fileCfg.publicUrl || '').replace(/\/+$/, '');
 function hostList() {
   const proto = useTls ? 'https' : 'http', out = [];
+  if (/^https:\/\/[\w.-]+(:\d+)?$/.test(PUBLIC_URL)) out.push({ label: 'Installable app (HTTPS: push, offline)', origin: PUBLIC_URL });
   for (const [name, list] of Object.entries(os.networkInterfaces()))
     for (const i of list || []) {
       if (i.family !== 'IPv4' || i.internal || /vethernet|wsl|hyper-v|virtual|vmware|docker/i.test(name)) continue;
@@ -361,6 +364,7 @@ function phonePage(req, res) {
   const local = ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress);
   if (!local || req.headers['x-forwarded-for'] || req.headers['tailscale-user-login']) return send(res, 403, 'Open this page on the PC that runs LifeQuest.', 'text/plain');
   const proto = useTls ? 'https' : 'http', links = [];
+  if (/^https:\/\/[\w.-]+(:\d+)?$/.test(PUBLIC_URL)) links.push({ label: 'Installable app (HTTPS: push notifications, offline, Add to Home Screen)', url: `${PUBLIC_URL}/${TOKEN ? '#token=' + TOKEN : ''}` });
   for (const [name, list] of Object.entries(os.networkInterfaces()))
     for (const i of list || []) {
       if (i.family !== 'IPv4' || i.internal || /vethernet|wsl|hyper-v|virtual|vmware|docker/i.test(name)) continue;
@@ -401,7 +405,7 @@ async function pushTick() {
     for (const it of due) {
       sent.push([pid, it.id]);
       for (const sub of snap.subs[pid] || []) {
-        try { const st = await push.sendPush(VAPID, sub, { title: it.title, body: it.body, tag: it.tag }); if (st === 404 || st === 410) dead.push([pid, sub.endpoint]); else if (st >= 400) console.log('push gateway answered', st); }
+        try { const st = await push.sendPush(VAPID, sub, { title: it.title, body: it.body, tag: it.tag, url: it.url || '/', badge: it.badge || 0 }); if (st === 404 || st === 410) dead.push([pid, sub.endpoint]); else if (st >= 400) console.log('push gateway answered', st); }
         catch (e) { console.log('push error:', e.message); }
       }
     }

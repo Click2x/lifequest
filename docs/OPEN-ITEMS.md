@@ -30,3 +30,9 @@ Things we deliberately parked or could not verify. Newest first. Tell me which t
 - Done: Phase 0 (groundwork), Phase 1 (theme layer), Phase 2 (colors from tokens everywhere, floating gain numbers, keyboard access).
 - Pending: pixel font download (Pixelify Sans, OFL; needs the owner's OK to download, falls back to monospace now), Phase 3 new nav + main menu, Phase 4 forecast card, Phase 5 battle scene for the Saga, Phase 6 polish.
 - Saga end-to-end test (story, then picture, in one run) is not yet confirmed: on the dev machine, Ollama and Stable Diffusion failed to allocate memory when Windows ran out of commit headroom (large WSL VM plus a small pagefile).
+
+## Engagement and hosting
+- Done: HTTPS via Tailscale Serve on :443; `publicUrl` config; Nudges (morning story, evening odds, streak-at-risk); tap-to-open routing and app-icon badge; server stores a safe `url` and `badge` per queued push.
+- Unverified: real delivery to a phone (needs a device subscribed over the HTTPS link), badge on iOS/Android, tap-through routing on a real device.
+- Not built: true home-screen widgets (need a native wrapper, e.g. Capacitor plus an Android/iOS widget), boss and squad event nudges, friend-activity pings (deliberately left out of the gentle default).
+- Hosting note: Tailscale Serve allows HTTPS only on ports 443, 8443 and 10000. LifeQuest took 443 (previously proxied to 127.0.0.1:5960); a backup of the old Serve config is in `data/serve-backup-*.json`.

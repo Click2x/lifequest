@@ -34,7 +34,7 @@ async function pushSync() {
     if (isRest(d)) continue;
     const [y, m, dd] = d.split('-').map(Number), base = new Date(y, m - 1, dd).getTime(), fired = d === today() ? S.remFired : { ids: {} };
     reminderEventsFor(d).filter(e => !inQuiet(R, e.at) && !(fired.ids || {})[e.id]).sort((a, b) => a.at - b.at).slice(0, R.max)
-      .forEach(e => items.push({ id: e.id, at: base + e.at * 60000, title: e.title, body: e.body, tag: e.id }));
+      .forEach(e => items.push({ id: e.id, at: base + e.at * 60000, title: e.title, body: e.body, tag: e.id, url: e.url || '/', badge: typeof ritualsLeft === 'function' ? ritualsLeft() : 0 }));
   }
   try { await apiFetch('/api/push/schedule', { method: 'POST', body: JSON.stringify({ items }) }); } catch { }
 }

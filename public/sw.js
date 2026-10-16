@@ -1,5 +1,5 @@
-const CACHE = 'lifequest-v5';
-const SHELL = ['/', '/index.html', '/app.js', '/ext-habits.js', '/ext-time.js', '/ext-money.js', '/ext-life.js', '/ext-push.js', '/ext-saga.js', '/ext-rpg.js', '/theme-rpg.css', '/boot.js', '/style.css', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
+const CACHE = 'lifequest-v6';
+const SHELL = ['/', '/index.html', '/app.js', '/ext-habits.js', '/ext-time.js', '/ext-money.js', '/ext-life.js', '/ext-push.js', '/ext-saga.js', '/ext-engage.js', '/ext-rpg.js', '/theme-rpg.css', '/boot.js', '/style.css', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -26,7 +26,8 @@ self.addEventListener('push', e => {
   e.waitUntil((async () => {
     const cs = await clients.matchAll({ type: 'window', includeUncontrolled: true });
     if (cs.some(c => c.visibilityState === 'visible')) { cs.forEach(c => c.postMessage({ toast: '🔔 ' + (d.title || 'Reminder') })); return; }   // app is open: show it in-app instead
-    await self.registration.showNotification(d.title || 'LifeQuest', { body: d.body || '', tag: d.tag, icon: '/icon-192.png', data: d, actions: [{ action: 'snooze', title: 'Snooze 10 min' }] });
+    try { if (d.badge && self.navigator.setAppBadge) await self.navigator.setAppBadge(d.badge); } catch { }
+    await self.registration.showNotification(d.title || 'LifeQuest', { body: d.body || '', tag: d.tag, icon: '/icon-192.png', badge: '/icon-192.png', data: d, actions: [{ action: 'open', title: 'Open' }, { action: 'snooze', title: 'Snooze 10 min' }] });
   })());
 });
 self.addEventListener('notificationclick', e => {
@@ -38,6 +39,7 @@ self.addEventListener('notificationclick', e => {
       if (cs.length) cs.forEach(c => c.postMessage({ snooze: m })); else await clients.openWindow('/?snooze=' + encodeURIComponent(JSON.stringify(m)));
       return;
     }
-    if (cs.length) return cs[0].focus(); return clients.openWindow('/');
+    const url = d.url || '/';
+    if (cs.length) { cs[0].postMessage({ go: url }); return cs[0].focus(); } return clients.openWindow(url);
   })());
 });

@@ -60,6 +60,18 @@ Configuration lives in `data/config.json` (or environment variables):
 
 Other keys: `storyUrl` (default Ollama at http://127.0.0.1:11434), `sdUrl`, `sdSteps`, `storyMinFreeMb` (18500), `sdMinFreeMb` (9000), `gpuWaitMinutes` (360), `dailyEpisodes`, `dailyImages`.
 
+## Notifications and nudges
+
+Turn on **Hero → Reminder settings** (opt-in), then push. LifeQuest can reach you even when the app is closed, using your own server (no third-party service beyond the browser's push gateway). Besides task, habit, bill and check-in reminders, there are three optional **Nudges** (Hero → Nudges):
+
+- 📖 **Morning:** your hero's story from yesterday is waiting
+- ⚔️ **Evening:** tonight's boss odds, and how much one more ritual raises them
+- 🔥 **Evening:** a streak of 3+ days you can still save tonight (never guilt-based)
+
+Everything respects quiet hours, a daily cap, rest mode and snooze. Tapping a notification opens the right screen, and the app icon shows how many rituals are left today (where the browser supports the badge API). True home-screen widgets need a native wrapper, which is on the roadmap.
+
+Push needs HTTPS. Set `publicUrl` in `data/config.json` (or `LIFEQUEST_PUBLIC_URL`) to your HTTPS address, for example one made with `tailscale serve --bg --https=443 http://127.0.0.1:4747`, and the `/phone` page will list it first.
+
 ## Multiple users
 
 Yes. Everyone you invite gets their **own private profile** (no email or password): they scan the QR on `http://localhost:4747/phone`, which signs their device in and shows the welcome screen where they pick a name. Each person has a separate save file, and only the squad board (name, avatar, level, XP, streak, focus minutes) is shared, and only if they opt in.
