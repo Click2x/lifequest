@@ -27,8 +27,8 @@ Things we deliberately parked or could not verify. Newest first. Tell me which t
 - The server currently allows 25 profiles (`MAX_PLAYERS`).
 
 ## UI refresh ("16-bit Saga"): plan in docs/UI-REFRESH.md
-- Done: Phase 0 (groundwork), Phase 1 (theme layer), Phase 2 (colors from tokens everywhere, floating gain numbers, keyboard access), Phase 3 (5-slot bar with raised Saga, Menu, Saga tab with chapter strip and chronicle, Config split from Hero, Town reordered), Phase 4 (Fire Emblem-style forecast with live "raise your odds" options, NEW marker on unread episodes).
-- Pending: pixel font download (Pixelify Sans, OFL; needs the owner's OK to download, falls back to monospace now), Phase 5 battle scene for the Saga, Phase 6 polish.
+- Done: Phase 0 (groundwork), Phase 1 (theme layer), Phase 2 (colors from tokens everywhere, floating gain numbers, keyboard access), Phase 3 (5-slot bar with raised Saga, Menu, Saga tab with chapter strip and chronicle, Config split from Hero, Town reordered), Phase 4 (Fire Emblem-style forecast with live "raise your odds" options, NEW marker on unread episodes), Phase 5 (turn-based battle scene: encounter, Fight/Skills/Status/Flee, d20 roll landing on the stored result, story pages, victory/training result; calm-mode and keyboard friendly).
+- Pending: pixel font download (Pixelify Sans, OFL; needs the owner's OK to download, falls back to monospace now), Phase 6 polish.
 - Saga end-to-end test (story, then picture, in one run) is not yet confirmed: on the dev machine, Ollama and Stable Diffusion failed to allocate memory when Windows ran out of commit headroom (large WSL VM plus a small pagefile).
 
 ## Engagement and hosting
@@ -36,3 +36,5 @@ Things we deliberately parked or could not verify. Newest first. Tell me which t
 - Unverified: real delivery to a phone (needs a device subscribed over the HTTPS link), badge on iOS/Android, tap-through routing on a real device.
 - Not built: true home-screen widgets (need a native wrapper, e.g. Capacitor plus an Android/iOS widget), boss and squad event nudges, friend-activity pings (deliberately left out of the gentle default).
 - Hosting note: Tailscale Serve allows HTTPS only on ports 443, 8443 and 10000. LifeQuest took 443 (previously proxied to 127.0.0.1:5960); a backup of the old Serve config is in `data/serve-backup-*.json`.
+- Battle scene (Phase 5) was tested with the template story only. Still to check with a real AI-written episode: very long paragraphs (the message window scrolls), the generated portrait appearing on the story pages, and real-phone touch and small-screen layout (SE-size).
+- Not in the scene yet: a "Gold gained" line (no per-day gold record exists), the sound-effect set beyond blips, a portrait 16-bit filter.

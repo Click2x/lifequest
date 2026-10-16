@@ -39,7 +39,7 @@ Everything runs on your own machine, saves instantly on the phone, and works off
 
 ## Roadmap
 
-The look is being rebuilt as a "16-bit Saga" in phases (plan: [docs/UI-REFRESH.md](docs/UI-REFRESH.md)). Done: the theme layer, component restyle, and the Final Fantasy-style main menu and bottom bar. The Saga tonight-forecast shows hit chance and tappable ways to raise it. Next: the Saga as a full turn-based battle scene. Known gaps are tracked in [docs/OPEN-ITEMS.md](docs/OPEN-ITEMS.md).
+The look is being rebuilt as a "16-bit Saga" in phases (plan: [docs/UI-REFRESH.md](docs/UI-REFRESH.md)). Done: the theme layer, component restyle, and the Final Fantasy-style main menu and bottom bar. The Saga tonight-forecast shows hit chance and tappable ways to raise it. The Saga plays as a turn-based battle scene. Next: feedback polish (level-up fanfare, chest and perfect-day moments). Known gaps are tracked in [docs/OPEN-ITEMS.md](docs/OPEN-ITEMS.md).
 
 ## The Saga (daily anime/D&D episode)
 

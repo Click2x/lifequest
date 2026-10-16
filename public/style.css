@@ -153,3 +153,65 @@ nav .bang{position:absolute;top:4px;right:calc(50% - 22px);background:var(--bad)
 .forecast .fc-stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}.forecast .fc-stats span{color:var(--dim)}.forecast .fc-stats b{color:var(--txt)}
 .fc-opt{display:block;width:100%;text-align:left;margin-top:6px;padding:11px 12px 11px 30px;min-height:44px;position:relative;background:#120e2b;border:1px solid var(--line);border-radius:12px;color:var(--txt);touch-action:manipulation}
 .newchip{color:var(--bad);margin-left:6px;font-size:.7rem;padding:0 6px}
+
+/* ── Saga battle scene (always the classic blue-window look, in either skin) ── */
+#battle{--b-top:#2f45c9;--b-bot:#101a66;--b-line:#e8ecff;--b-dark:#04051a;--b-acc:#ffd23f;--b-dim:#b9c3ff;--b-good:#5cf28a;--b-bad:#ff5d73;
+  position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;color:#fff;
+  background:radial-gradient(120% 70% at 50% 25%,#1a2380 0%,#080a2a 62%,#04051a 100%);
+  padding:calc(8px + var(--safe-t)) 10px calc(10px + var(--safe-b));font-family:var(--font-text,system-ui,sans-serif);overflow:hidden}
+#battle.hidden{display:none}
+body.bt-open{overflow:hidden}
+.bt-top{display:flex;justify-content:space-between;align-items:center;min-height:44px}
+.bt-link,.bt-x{background:none;color:var(--b-dim,#b9c3ff);font:15px var(--font-ui,monospace);min-height:44px;min-width:44px;padding:0 8px;text-decoration:underline}
+.bt-x{text-decoration:none;font-size:20px}
+.bt-stage{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;gap:4px}
+.bt-boss{font-size:96px;line-height:1.1;animation:bt-bob 1s steps(2) infinite}
+@keyframes bt-bob{50%{transform:translateY(-6px)}}
+.bt-name{font:700 22px var(--font-ui,monospace);color:var(--b-acc,#ffd23f);letter-spacing:.06em}
+.bt-sub{color:var(--b-dim,#b9c3ff);font:15px var(--font-ui,monospace)}
+.bt-win{background:linear-gradient(180deg,var(--b-top),var(--b-bot));border-radius:4px;padding:12px 14px;
+  box-shadow:0 0 0 2px var(--b-dark),inset 0 0 0 2px var(--b-line),inset 0 0 0 4px var(--b-dark);margin:2px 2px 8px}
+.bt-msg{min-height:116px;max-height:36vh;overflow:auto;font-size:18px;line-height:1.5;cursor:pointer;outline:none}
+.bt-msg:focus-visible{box-shadow:0 0 0 2px var(--b-dark),inset 0 0 0 2px var(--b-acc),inset 0 0 0 4px var(--b-dark)}
+.bt-msg.bt-story{max-height:42vh}
+.bt-panel{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.bt-title{font:700 17px var(--font-ui,monospace);color:var(--b-acc,#ffd23f);letter-spacing:.04em}
+.bt-hero .bt-sub{margin-bottom:6px}
+.bt-cmds{display:grid;grid-template-columns:1fr;gap:0;padding:6px 6px 6px 10px;min-height:100px}
+.bt-cmds .cmd{position:relative;min-height:44px;padding:0 8px 0 28px;text-align:left;background:none;color:#fff;font:19px var(--font-ui,monospace)}
+.bt-cmds .cmd::before{content:"";position:absolute;left:6px;top:50%;width:10px;height:12px;margin-top:-6px;background:var(--b-acc);clip-path:polygon(0 0,100% 50%,0 100%);opacity:0}
+.bt-cmds .cmd:is(:hover,:focus-visible)::before{opacity:1;animation:cursor-bob .5s steps(2) infinite}
+.bt-cmds .cmd:focus-visible{outline:none;color:var(--b-acc)}
+.bt-hero .bar{height:10px;margin-top:4px;background:var(--b-dark);box-shadow:0 0 0 2px var(--b-line);border:0;border-radius:0}
+.bt-hero .bar>i{background:var(--b-acc);border-radius:0}
+.bt-hero .gauge{display:grid;grid-template-columns:auto 1fr;gap:0 8px;font:15px var(--font-ui,monospace)}
+.bt-hero .gauge .lbl{color:var(--b-acc)}.bt-hero .gauge .num{text-align:right}.bt-hero .gauge .bar{grid-column:1/-1}
+.bt-port{width:100%;max-width:420px}
+.bt-port .portrait,.bt-port .portrait-slot{border-radius:0;box-shadow:0 0 0 2px var(--b-dark),0 0 0 4px var(--b-line),0 0 0 6px var(--b-dark);margin:6px 8px;width:calc(100% - 16px)}
+.bt-dots{color:var(--b-acc);letter-spacing:.2em;margin-top:6px}
+.bt-result{width:100%;max-width:420px;text-align:left}
+.bt-row{display:flex;justify-content:space-between;gap:12px;margin-top:8px;font-size:17px}.bt-row span{color:var(--b-dim)}.bt-row b{color:var(--b-acc);text-align:right}
+.bt-cap{color:var(--b-dim);font-size:14px;margin-top:6px}
+#bt-fx{position:relative;display:flex;flex-direction:column;align-items:center;min-height:0}
+.d20{width:112px;height:112px;margin:8px auto 0;display:grid;place-items:center;background:var(--b-acc);clip-path:polygon(50% 0,100% 28%,100% 72%,50% 100%,0 72%,0 28%);font:700 38px var(--font-ui,monospace);color:var(--b-dark)}
+.d20.rolling{animation:d20-spin .12s steps(3) infinite}
+@keyframes d20-spin{33%{transform:rotate(60deg) scale(.92)}66%{transform:rotate(120deg) scale(1.04)}}
+.d20.land{animation:d20-land .35s steps(4)}
+@keyframes d20-land{0%{transform:scale(1.4)}50%{transform:scale(.9)}100%{transform:scale(1)}}
+.d20.nat20{background:#fff}.d20.nat1{background:var(--b-dim)}
+.bt-boss.hit{animation:bt-shake .5s steps(6)}.bt-boss.miss{animation:bt-shake .3s steps(3)}
+.bt-boss.ko{animation:bt-ko .7s steps(7) forwards}.bt-boss.trip{animation:bt-trip .5s steps(2) forwards}.bt-boss.shrug{animation:bt-bob 1s steps(2) infinite}
+@keyframes bt-shake{20%{transform:translateX(-12px)}40%{transform:translateX(12px)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
+@keyframes bt-ko{to{transform:translate(120px,-80px) rotate(220deg);opacity:0}}
+@keyframes bt-trip{to{transform:rotate(90deg) translateY(10px)}}
+.bt-hero.hurt{animation:bt-shake .5s steps(6)}
+.bt-dmg{position:absolute;top:-70px;font:700 30px var(--font-ui,monospace);color:#fff;text-shadow:2px 0 var(--b-dark),-2px 0 var(--b-dark),0 2px var(--b-dark),0 -2px var(--b-dark);animation:popnum .9s steps(9) forwards}
+.bt-flash{position:absolute;inset:0;background:#fff;opacity:.6;pointer-events:none;animation:bt-fl .36s steps(3) forwards}
+@keyframes bt-fl{to{opacity:0}}
+.bt-wipe{position:absolute;inset:0;display:grid;grid-template-rows:repeat(8,1fr);z-index:5;pointer-events:none}
+.bt-wipe i{background:var(--b-dark);transform:scaleX(1);animation:bt-wipe .4s steps(6) forwards;animation-delay:calc(var(--n)*20ms)}
+.bt-wipe i:nth-child(odd){transform-origin:left}.bt-wipe i:nth-child(even){transform-origin:right}
+@keyframes bt-wipe{to{transform:scaleX(0)}}
+#battle .more{color:var(--b-acc)}
+@media (max-width:359px){.bt-panel{grid-template-columns:1fr}}
+@media (max-height:640px){.bt-boss{font-size:64px}.bt-msg{min-height:92px}.d20{width:84px;height:84px;font-size:30px}}
