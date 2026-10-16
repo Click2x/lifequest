@@ -1,4 +1,4 @@
-const CACHE = 'lifequest-v7';
+const CACHE = 'lifequest-v8';
 const SHELL = ['/', '/index.html', '/app.js', '/ext-habits.js', '/ext-time.js', '/ext-money.js', '/ext-life.js', '/ext-push.js', '/ext-saga.js', '/ext-engage.js', '/ext-rpg.js', '/theme-rpg.css', '/boot.js', '/style.css', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {

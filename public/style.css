@@ -147,3 +147,9 @@ nav .bang{position:absolute;top:4px;right:calc(50% - 22px);background:var(--bad)
 @keyframes bang{50%{opacity:.4}}
 .backbtn{margin:10px 0 0}
 .menurow{min-height:60px}
+
+/* forecast window */
+.forecast .fc-hit{display:flex;align-items:baseline;gap:10px;margin-top:12px}.forecast .fc-hit .lbl{color:var(--acc)}.forecast .fc-hit .num{font-size:1.6rem}
+.forecast .fc-stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}.forecast .fc-stats span{color:var(--dim)}.forecast .fc-stats b{color:var(--txt)}
+.fc-opt{display:block;width:100%;text-align:left;margin-top:6px;padding:11px 12px 11px 30px;min-height:44px;position:relative;background:#120e2b;border:1px solid var(--line);border-radius:12px;color:var(--txt);touch-action:manipulation}
+.newchip{color:var(--bad);margin-left:6px;font-size:.7rem;padding:0 6px}

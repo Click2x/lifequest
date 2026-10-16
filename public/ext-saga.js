@@ -165,19 +165,33 @@ function sagaCard() {
   if (!A_.on) return `<div class="card glow" style="border-color:var(--acc)"><div class="row"><div style="font-size:34px">📖</div><div class="grow"><b>Your life is a campaign</b><div class="sm dim">Every real action you take powers your hero. Each morning, read the anime episode of what yesterday's effort did.</div></div></div><button class="btn block" style="margin-top:10px" data-act="saga-on">Begin the Saga</button></div>`;
   const y = yesterday(), ep = A_.eps[y], busy = sagaRT.busy[y] || A_.pending[y];
   let main;
-  if (ep) main = `<div data-act="saga-read" data-d="${y}" style="cursor:pointer">${sagaImgTag(y, 190)}<div style="margin-top:8px"><div class="sm dim">EPISODE ${ep.n}</div><b style="font-size:1.1rem">${esc(ep.title)}</b><div class="sm" style="margin-top:2px">${diceLine(ep.check)}</div></div></div><button class="btn sm gold" style="margin-top:8px" data-act="saga-read" data-d="${y}">▶ Watch episode</button>`;
+  if (ep) main = `<div data-act="saga-read" data-d="${y}" style="cursor:pointer">${sagaImgTag(y, 190)}<div style="margin-top:8px"><div class="sm dim">EPISODE ${ep.n}${ep.seen ? '' : ' <span class="chip newchip">NEW</span>'}</div><b style="font-size:1.1rem">${esc(ep.title)}</b><div class="sm" style="margin-top:2px">${diceLine(ep.check)}</div></div></div><button class="btn sm gold" style="margin-top:8px" data-act="saga-read" data-d="${y}">▶ Watch episode</button>`;
   else if (busy) main = `<div class="row"><div style="font-size:28px">${busy === 'waiting-gpu' ? '⏳' : '✍️'}</div><div class="grow"><b>${busy === 'waiting-gpu' ? 'Waiting for the graphics card…' : 'The storyteller is writing…'}</b><div class="sm dim">${busy === 'waiting-gpu' ? 'Another app is using the GPU, so the story starts as soon as it is free. You can keep using the app.' : 'The episode will appear here. You can keep using the app.'}</div></div></div>`;
   else if (sagaDay(y).any || A_.n > 0) main = `<div class="row"><div class="grow"><b>Yesterday's episode</b><div class="sm dim">${sagaDay(y).any ? 'Your actions are ready to become a story.' : 'A quiet day: the hero rests at camp.'}</div></div><button class="btn sm" data-act="saga-gen" data-d="${y}">Write it</button></div>`;
   else main = `<div class="sm dim">Your first episode is written the morning after your first day of real actions. Go earn some XP!</div>`;
   return `<div class="card glow"><div class="sm dim" style="margin-bottom:6px">📖 THE SAGA</div>${main}</div>${sagaTonight()}`;
 }
+// what would raise tonight's odds, worked out from the real bonus rules (only options that actually help)
+function sagaRaiseOptions(t, d, c) {
+  const cur = c.bonus, bonusWith = patch => actionBonus({ ...d, ...patch }), opts = [];
+  const left = todaysHabits().filter(h => !h.log[t]).length, open = S.quests.filter(q => !q.done).length;
+  for (let k = 1; k <= Math.min(2, left); k++) { const g = bonusWith({ habits: d.habits.concat(Array(k).fill({})) }) - cur; if (g > 0) { opts.push({ g, label: k + ' more ritual' + (k > 1 ? 's' : ''), act: 'today' }); break; } }
+  const f = bonusWith({ focusMin: d.focusMin + 25 }) - cur; if (f > 0) opts.push({ g: f, label: '25 minutes of focus', act: 'focus' });
+  for (let k = 1; k <= Math.min(2, open); k++) { const g = bonusWith({ quests: d.quests.concat(Array(k).fill({})) }) - cur; if (g > 0) { opts.push({ g, label: k + ' more quest' + (k > 1 ? 's' : ''), act: 'quests' }); break; } }
+  if (!d.perfect && left > 0) { const g = bonusWith({ perfect: true, habits: d.habits.concat(Array(left).fill({})) }) - cur; if (g > 0) opts.push({ g, label: 'finish all ' + left + ' ritual' + (left > 1 ? 's' : '') + ' (perfect day)', act: 'today' }); }
+  if (d.mood == null) { const g = bonusWith({ mood: 2 }) - cur; if (g > 0) opts.push({ g, label: 'daily check-in (+10 XP)', act: 'checkin' }); }
+  return opts.map(o => ({ ...o, odds: Math.round(sagaOdds(c.mod, cur + o.g, c.dc) * 100) })).sort((x, y) => y.odds - x.odds).slice(0, 4);
+}
 function sagaTonight() {
   const t = today(), d = sagaDay(t), c = sagaCheck(t, d), odds = Math.round(sagaOdds(c.mod, c.bonus, c.dc) * 100), [abbr] = SAGA_ABILITY[c.ability];
-  const col = odds >= 70 ? 'var(--good)' : odds >= 45 ? 'var(--gold)' : 'var(--bad)';
-  return `<div class="card"><div class="row"><div style="font-size:34px">${c.boss.e}</div><div class="grow"><b>Tonight: ${esc(c.boss.n)}, the ${c.phase}</b><div class="sm dim">Roll to win: d20 + ${abbr} +${c.mod} + your actions vs DC ${c.dc}</div></div></div>
-    <div style="margin:10px 0 4px" class="row"><span class="sm dim">Your odds right now</span><span class="grow"></span><b style="color:${col};font-size:1.3rem">${d.any ? odds + '%' : '~' + odds + '%'}</b></div>
-    <div class="bar" style="height:8px"><i style="width:${odds}%;background:${col}"></i></div>
-    <div class="sm dim" style="margin-top:8px">${d.any ? `Action bonus so far: <b style="color:var(--txt)">+${c.bonus}</b>. ` : 'No actions yet today. '}Each two habits, 25 minutes of focus, two quests, a perfect day, and a check-in add to your roll. The dice are rolled tomorrow morning and can't be re-rolled, so make your modifier count. 🎲</div></div>`;
+  const col = odds >= 70 ? 'var(--good)' : odds >= 45 ? 'var(--gold)' : 'var(--bad)', opts = sagaRaiseOptions(t, d, c);
+  return `<div class="card forecast" role="group" aria-label="Tonight's forecast"><div class="win-title">TONIGHT'S FORECAST</div>
+    <div class="row"><div style="font-size:34px">${c.boss.e}</div><div class="grow"><b>${esc(c.boss.n)}</b><div class="sm dim">the ${c.phase} · DC ${c.dc}</div></div></div>
+    <div class="fc-hit"><span class="lbl">HIT</span><b class="num" style="color:${col}" aria-label="Hit chance ${odds} percent">${d.any ? odds + '%' : '~' + odds + '%'}</b></div>
+    <div class="bar" role="img" aria-label="Hit chance ${odds} percent"><i style="width:${odds}%;background:${col}"></i></div>
+    <div class="fc-stats"><span>MOD <b>+${c.mod} ${abbr}</b></span><span>ACT <b>+${c.bonus}</b></span><span>CRIT <b>5%</b></span></div>
+    ${opts.length ? `<div class="sm dim" style="margin-top:12px">Raise your odds</div>${opts.map(o => `<button class="fc-opt" data-act="saga-raise" data-k="${o.act}"><b>+${o.g}</b> ${o.label} <span class="dim">→ ${o.odds}%</span></button>`).join('')}` : '<div class="sm" style="margin-top:12px">Your preparation is at its peak. Finish strong.</div>'}
+    <div class="sm dim" style="margin-top:10px">The die is cast at dawn and can't be re-rolled. Your actions today set the modifier. 🎲</div></div>`;
 }
 const sagaUnread = () => { const ep = S.saga.eps[yesterday()]; return !!(S.saga.on && ep && !ep.seen); };
 function sagaRead(date) {
@@ -229,6 +243,10 @@ Object.assign(A, {
   'saga-on': () => { S.saga.on = true; sagaSeed(); save(); render(); toast('The Saga begins! 📖', 'gold'); sagaStatus(true).then(() => tab === 'hero' && render()); setTimeout(sagaAuto, 500); },
   'saga-off': () => { S.saga.on = false; save(); render(); },
   'saga-read': el => sagaRead(el.dataset.d),
+  'saga-raise': el => {
+    const k = el.dataset.k; tab = k === 'focus' ? 'focus' : k === 'quests' ? 'quests' : 'today'; render(); window.scrollTo(0, 0);
+    if (k === 'today' || k === 'checkin') setTimeout(() => { const h = [...document.querySelectorAll('#app h2')].find(x => x.textContent.includes(k === 'checkin' ? 'Daily check-in' : "Today's habits")); h && h.scrollIntoView({ block: 'start' }); }, 50);
+  },
   'saga-gen': el => sagaGenerate(el.dataset.d),
   'saga-repaint': el => { closeModal(); const e = S.saga.eps[el.dataset.d]; if (e) { e.img = 'none'; delete sagaRT.imgs[el.dataset.d]; sagaPaint(el.dataset.d); toast('Repainting…'); } },
   'saga-names': () => { S.saga.names = S.saga.names === false; save(); render(); },
