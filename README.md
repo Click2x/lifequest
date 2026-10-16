@@ -59,7 +59,7 @@ Configuration lives in `data/config.json` (or environment variables):
 { "storyModel": "nova-samantha-v1", "sdDir": "C:/path/to/stable-diffusion-webui", "sdModel": "CyberRealisticPony_V18.0_F16", "sdIdleMinutes": 10 }
 ```
 
-Other keys: `storyUrl` (default Ollama at http://127.0.0.1:11434), `sdUrl`, `sdSteps`, `storyMinFreeMb` (18500), `sdMinFreeMb` (9000), `gpuWaitMinutes` (360), `dailyEpisodes`, `dailyImages`.
+Other keys: `sdStyle` (`cinematic` by default, or `anime` for flat-colour cel-shaded art; compare them with `node tools/style-test.js`), `storyUrl` (default Ollama at http://127.0.0.1:11434), `sdUrl`, `sdSteps`, `storyMinFreeMb` (18500), `sdMinFreeMb` (9000), `gpuWaitMinutes` (360), `dailyEpisodes`, `dailyImages`.
 
 ## Notifications and nudges
 

@@ -60,7 +60,7 @@ const pick = (env, key, dflt) => process.env[env] || fileCfg[key] || dflt;
 const saga = sagaLib.create({
   storyUrl: pick('STORY_URL', 'storyUrl', 'http://127.0.0.1:11434'), storyModel: pick('STORY_MODEL', 'storyModel', 'nova-samantha-v1'),
   sdUrl: pick('SD_URL', 'sdUrl', 'http://127.0.0.1:7860'), sdDir: pick('SD_DIR', 'sdDir', ''), sdModel: pick('SD_MODEL', 'sdModel', ''),
-  sdIdleMinutes: +pick('SD_IDLE_MINUTES', 'sdIdleMinutes', 10), sdSteps: +pick('SD_STEPS', 'sdSteps', 28), dailyLimit: +pick('SAGA_DAILY_EPISODES', 'dailyEpisodes', 4), dailyImages: +pick('SAGA_DAILY_IMAGES', 'dailyImages', 6),
+  sdIdleMinutes: +pick('SD_IDLE_MINUTES', 'sdIdleMinutes', 10), sdSteps: +pick('SD_STEPS', 'sdSteps', 28), sdStyle: pick('SD_STYLE', 'sdStyle', 'cinematic'), dailyLimit: +pick('SAGA_DAILY_EPISODES', 'dailyEpisodes', 4), dailyImages: +pick('SAGA_DAILY_IMAGES', 'dailyImages', 6),
 }, DATA_DIR);
 const PUSH_FILE = path.join(DATA_DIR, 'push.json');
 const pushDB = () => { try { const d = JSON.parse(fs.readFileSync(PUSH_FILE, 'utf8')); return { subs: d.subs || {}, queue: d.queue || {}, sent: d.sent || {} }; } catch { return { subs: {}, queue: {}, sent: {} }; } };

@@ -140,7 +140,14 @@ function create(cfg, dataDir) {
     } finally { armStop(); }
   }
   // Pony-family checkpoints respond to these score/source tags; the safe rating and negative terms keep it family-friendly
+  // sdStyle: "cinematic" (default, the tested look) or "anime" (flat-colour cel-shaded key art; pushes realistic checkpoints away from photo looks)
+  const ANIME_POS = ['anime screencap', 'anime coloring', 'flat color', '2d illustration', 'clean lineart', 'thick outlines', 'cel shading', 'vibrant colors', 'studio anime key visual'];
+  const ANIME_NEG = 'realistic, photorealistic, photo, 3d, 3d render, cgi, skin pores, film grain, depth of field, bokeh, volumetric light, lens flare, hdr';
   function compose({ look, gear, scene, mood }) {
+    if (cfg.sdStyle === 'anime') {
+      const positive = ['score_9', 'score_8_up', 'score_7_up', 'source_anime', 'rating_safe', ...ANIME_POS, 'dynamic composition', 'fantasy adventure', clean(look), clean(gear), clean(scene), clean(mood)].filter(Boolean).join(', ');
+      return { positive, negative: 'score_6, score_5, score_4, source_pony, source_furry, nsfw, nudity, explicit, gore, blood, text, watermark, signature, logo, lowres, bad anatomy, extra fingers, deformed, ' + ANIME_NEG };
+    }
     const positive = ['score_9', 'score_8_up', 'score_7_up', 'source_anime', 'rating_safe', 'anime key visual', 'cel shaded', 'vibrant colors', 'dynamic composition', 'cinematic lighting', 'fantasy adventure',
       clean(look), clean(gear), clean(scene), clean(mood)].filter(Boolean).join(', ');
     const negative = 'score_6, score_5, score_4, source_pony, source_furry, nsfw, nudity, explicit, gore, blood, text, watermark, signature, logo, lowres, bad anatomy, extra fingers, deformed, photorealistic, photo, 3d render';

@@ -40,3 +40,7 @@ Things we deliberately parked or could not verify. Newest first. Tell me which t
 - Battle scene (Phase 5) was tested with the template story only. Still to check with a real AI-written episode: very long paragraphs (the message window scrolls), the generated portrait appearing on the story pages, and real-phone touch and small-screen layout (SE-size).
 - Not in the scene yet: a "Gold gained" line (no per-day gold record exists), the sound-effect set beyond blips, a portrait 16-bit filter.
 - Phase 6 not yet exercised on real data: Guild party gauges (needs a joined squad), the weekly-boss claim hit with a real claim, and the chiptune sounds on a phone speaker. Not done from the plan: Shop split into Treasury/Merchant, Dojo ring restyle, typewriter on Sage replies, event-log window on Town.
+
+## Anime art style (in progress)
+- Built, untested on GPU: `sdStyle: "anime"` option (stronger cel-shading tags, realism terms in the negative prompt) and `tools/style-test.js`, which renders the same hero with a fixed seed across every installed checkpoint in both styles and writes a contact sheet. Waiting for a time when the GPU and the WebUI are free (the owner was using Nova and Stable Diffusion for other projects).
+- Installed checkpoints are all realism-leaning (CyberRealistic Pony, Crealism, Graam XL, Omnigen). If the prompt-only approach is not enough, the next step is downloading an anime checkpoint (needs approval) and/or a hero LoRA for consistent faces.
