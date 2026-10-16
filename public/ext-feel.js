@@ -60,7 +60,7 @@ function statusWindow() {
     <div class="gauge" style="margin-top:10px"><span class="lbl">EXP</span><span class="num">${S.xp} · NEXT ${Math.max(0, upper - S.xp)}</span><div class="bar"><i style="width:${pct}%"></i></div></div></div>
   <div class="card"><div class="win-title">ATTRIBUTES</div>
     ${keys.map((k, i) => `<div class="attr"><span class="ab">${SAGA_ABILITY[k][0]}</span><b>${lv[i]}</b><span class="md">+${abilityMod(k)}</span><div class="bar"><i style="width:${Math.round(lv[i] / mx * 100)}%"></i></div><span class="dim an">${STATS[k].n}</span></div>`).join('')}
-    <details style="margin-top:10px"><summary class="sm dim" style="cursor:pointer;min-height:32px">Show chart</summary>${radar()}</details></div>
+    <details style="margin-top:10px"><summary class="sm dim" style="cursor:pointer">Show chart</summary>${radar()}</details></div>
   <div class="card"><div class="win-title">EQUIPMENT</div>
     <div class="row"><span class="dim" style="width:64px">Armor</span><span class="grow">${esc(sagaGear(l))}</span></div>
     <div class="row" style="margin-top:6px"><span class="dim" style="width:64px">Next</span><span class="grow">${esc(nextGear)}</span></div></div>`;

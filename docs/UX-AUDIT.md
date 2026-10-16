@@ -46,3 +46,15 @@ Discoverability fixes: (a) a one-time prompt after the first ritual: "Turn on th
 - **The preview is a static mock**, not wired to real data, and has not been tried on an iPhone or Android phone.
 - **The pixel font is not installed**, so the real look differs from the final one. The contrast numbers use the current fallback-independent colours only.
 - **Not confirmed:** whether the raised Saga tab is easy to hit one-handed on a large phone; I kept it from the original plan without testing it.
+
+## Outcome (built and re-measured)
+
+| Check | Before | After |
+|---|---|---|
+| Town height (375x812) | 2.9 screens, 12 windows | **1.3 screens**, habit list at 143px (was 1,761px) |
+| Money / Hero height | 3.4 / 3.9 screens | **2.4 / 1.8** (lower sections fold into titled rows that remember their state) |
+| Tap targets under 44px | 13 on Money, 7 on Hero, 2 on Town | **0 on every screen** (scanned: Town, Saga, Quests, Shop, Menu, Status, Dojo, Guild, Sage, Config, plus the level-up window) |
+| Text under AA contrast | Night "dim" captions 4.37:1 on the top of the window gradient | **0 failures in Night and in Daylight** (automatic scan; the scanner was checked against the old colour, which it flags at 4.37) |
+| Light theme | Parchment (cream) | **Daylight** (cool, high contrast) |
+
+Not covered by the scan: the first-run welcome sheet, the battle scene (always the dark window look), active Focus timer states, and any screen with data I did not create. The scan reads colours from computed styles, so text over images is not checked.

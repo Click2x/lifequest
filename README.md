@@ -32,7 +32,7 @@ An installable phone app (PWA) that turns your life into an RPG. No accounts, no
 | **Dojo (Focus)** | Focus timers as duels against bosses |
 | **Guild (Squad)** | Opt-in friend leaderboard, cheers, shared raid bosses, squad challenges, monthly league |
 | **Sage (Coach)** | A gentle coach with tips and a daily journal prompt, grounded in habit research (see [docs/RESEARCH.md](docs/RESEARCH.md)) |
-| **Status (Hero)** | Six stats, achievements, rewards you define yourself, and the Look settings (16-bit or Classic, Night or Parchment) |
+| **Status (Hero)** | Six stats, achievements, rewards you define yourself, and the Look settings (16-bit or Classic, Night or Daylight) |
 | **The Saga** | Every morning, yesterday's real actions become a D&D-style episode with a d20 roll against the weekly boss |
 
 Everything runs on your own machine, saves instantly on the phone, and works offline.

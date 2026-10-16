@@ -231,3 +231,29 @@ body.bt-open{overflow:hidden}
 .msg.bot::before,.msg.me::before{display:block;font:700 .72rem var(--font-ui,system-ui);letter-spacing:.08em;margin-bottom:2px;opacity:.85}
 .msg.bot::before{content:"SAGE"}.msg.me::before{content:"YOU"}
 [data-act=cheer]{min-height:44px;min-width:44px}
+
+/* Town structure */
+.ritual-list .task{background:none;border:0;border-top:1px solid var(--line);border-radius:0;margin:0}
+.ritual-list .task:first-of-type{border-top:0}
+details.grp{margin:12px 0}
+details.grp>summary{list-style:none;min-height:48px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-weight:700;padding:0 4px}
+details.grp>summary::-webkit-details-marker{display:none}
+details.grp>summary::after{content:"▾";color:var(--dim)}
+details.grp[open]>summary::after{content:"▴"}
+.link{display:flex;align-items:center;gap:12px;min-height:64px;width:100%;background:none;border:0;color:inherit;font:inherit;text-align:left;padding:0;cursor:pointer;touch-action:manipulation}
+.link+.link{border-top:1px solid var(--line)}
+.link .big{font-size:28px;width:44px;text-align:center;flex:none}.link .grow{flex:1;min-width:0}.link .t{font-size:1.1rem;font-weight:600}.link .go{font-size:1.1rem;color:var(--acc2)}
+.btn.sm,.pills button,.seg button,.qp button,.picker button{min-height:44px}
+details.grp>summary{justify-content:flex-start;gap:8px}
+details.grp>summary::after{margin-left:auto}
+.hud .avatar{min-width:44px;min-height:44px}
+details>summary{min-height:44px;display:flex;align-items:center}
+.row.sm[data-act]{min-height:44px}
+
+details.fold>summary small{color:var(--dim);font-weight:400;font-size:.8rem;margin-left:auto;margin-right:8px}
+details.fold>summary::after{margin-left:0}
+details.fold>summary{justify-content:flex-start}
+details.fold>summary small{order:2}
+details.fold>summary::after{order:3}
+details.fold>summary{width:100%}
+details.fold>summary:not(:has(small))::after{margin-left:auto}

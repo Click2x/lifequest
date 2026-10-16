@@ -1,7 +1,7 @@
 'use strict';
 // 16-bit Saga skin: switching, settings card, and accessibility helpers. Styles live in theme-rpg.css (docs/UI-REFRESH.md).
 
-const RPG_THEMES = { dark: '#08091a', light: '#e9dcb8' };
+const RPG_THEMES = { dark: '#08091a', light: '#eef2fb' };
 const rpgCalm = () => !!(S.settings.calm || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches));
 
 // S.settings.skin: 'rpg' (default) | 'classic';  S.settings.theme: '' (auto) | 'dark' | 'light';  S.settings.plainfont: bool
@@ -37,7 +37,7 @@ function rpgSettings() {
     <div class="sm dim" style="margin-bottom:6px">Style</div>
     <div class="pills">${pill('skin-set', 'rpg', '⚔️ 16-bit', skin === 'rpg')}${pill('skin-set', 'classic', '✨ Classic', skin === 'classic')}</div>
     ${skin === 'rpg' ? `<div class="sm dim" style="margin:12px 0 6px">Colors</div>
-    <div class="pills">${pill('theme-set', '', '🌓 Auto', !theme)}${pill('theme-set', 'dark', '🌙 Night', theme === 'dark')}${pill('theme-set', 'light', '📜 Parchment', theme === 'light')}</div>
+    <div class="pills">${pill('theme-set', '', '🌓 Auto', !theme)}${pill('theme-set', 'dark', '🌙 Night', theme === 'dark')}${pill('theme-set', 'light', '☀️ Daylight', theme === 'light')}</div>
     <div class="row" style="margin-top:12px"><span class="grow">Retro pixel font <span class="sm dim">(off = plain, easier on the eyes)</span></span><button class="btn sm ${st.plainfont ? 'ghost' : ''}" data-act="set" data-v="plainfont-inv">${st.plainfont ? 'Off' : 'On'}</button></div>` : ''}
   </div>`;
 }

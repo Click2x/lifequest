@@ -237,7 +237,7 @@ function sagaBoot() {
   document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(sagaAuto, 1500); });
 }
 
-HOOKS['today-top'].push(sagaCard);
+HOOKS['today-saga'].push(sagaSummary);
 HOOKS.config.push(sagaSettings);
 Object.assign(A, {
   'saga-on': () => { S.saga.on = true; sagaSeed(); save(); render(); toast('The Saga begins! 📖', 'gold'); sagaStatus(true).then(() => tab === 'hero' && render()); setTimeout(sagaAuto, 500); },
@@ -245,7 +245,7 @@ Object.assign(A, {
   'saga-read': el => sagaRead(el.dataset.d),
   'saga-raise': el => {
     const k = el.dataset.k; tab = k === 'focus' ? 'focus' : k === 'quests' ? 'quests' : 'today'; render(); window.scrollTo(0, 0);
-    if (k === 'today' || k === 'checkin') setTimeout(() => { const h = [...document.querySelectorAll('#app h2')].find(x => x.textContent.includes(k === 'checkin' ? 'Daily check-in' : "Today's habits")); h && h.scrollIntoView({ block: 'start' }); }, 50);
+    if (k === 'today' || k === 'checkin') setTimeout(() => { const h = document.getElementById(k === 'checkin' ? 'checkin' : 'rituals'); h && h.scrollIntoView({ block: 'start' }); }, 50);
   },
   'saga-gen': el => sagaGenerate(el.dataset.d),
   'saga-repaint': el => { closeModal(); const e = S.saga.eps[el.dataset.d]; if (e) { e.img = 'none'; delete sagaRT.imgs[el.dataset.d]; sagaPaint(el.dataset.d); toast('Repainting…'); } },
@@ -268,4 +268,18 @@ function viewSaga() {
     <h2>📜 Chronicle <small>${eps.length} episode${eps.length === 1 ? '' : 's'}</small></h2>
     ${eps.length ? eps.slice(0, 30).map(([k, e]) => `<div class="task" data-act="saga-read" data-d="${k}"><div class="em">${(SAGA_OUTCOME[e.check?.outcome] || SAGA_OUTCOME.rest)[0]}</div><div class="grow"><div class="nm">Ep ${e.n} · ${esc(e.title)}</div><div class="sm dim">${k}</div></div>${e.seen ? '' : '<span class="chip">NEW</span>'}</div>`).join('') : '<div class="empty">Your first episode appears the morning after your first day of real actions.</div>'}
     <div class="sm dim" style="margin-top:10px">Saga settings live in Menu → Config.</div>`;
+}
+
+// Town shows the Saga as ONE window with two tappable rows; the full episode card and forecast live on the Saga tab
+function sagaSummary() {
+  const A_ = S.saga, link = (em, title, sub, attrs) => `<button class="link" ${attrs}><span class="big">${em}</span><span class="grow"><span class="t">${title}</span><br><span class="dim sm">${sub}</span></span><span class="go">▶</span></button>`;
+  if (!A_.on) return `<h2>The Saga</h2><div class="card">${link('📖', 'Begin the Saga', 'Turn each day of real effort into an anime episode', 'data-act="saga-on"')}</div>`;
+  const y = yesterday(), ep = A_.eps[y], busy = sagaRT.busy[y] || A_.pending[y], t = today(), d = sagaDay(t), c = sagaCheck(t, d);
+  const odds = Math.round(sagaOdds(c.mod, c.bonus, c.dc) * 100), opts = sagaRaiseOptions(t, d, c);
+  let r1 = '';
+  if (ep) r1 = link('📖', esc(ep.title) + (ep.seen ? '' : ' <span class="chip newchip">NEW</span>'), `Episode ${ep.n} · ${(SAGA_OUTCOME[ep.check?.outcome] || SAGA_OUTCOME.rest)[1]}`, `data-act="saga-read" data-d="${y}"`);
+  else if (busy) r1 = `<div class="link" style="cursor:default"><span class="big">${busy === 'waiting-gpu' ? '⏳' : '✍️'}</span><span class="grow"><span class="t">${busy === 'waiting-gpu' ? 'Waiting for the graphics card…' : 'The storyteller is writing…'}</span><br><span class="dim sm">You can keep using the app</span></span></div>`;
+  else if (sagaDay(y).any) r1 = link('📖', "Yesterday's episode", 'Your actions are ready to become a story', `data-act="saga-gen" data-d="${y}"`);
+  const r2 = link('⚔️', `Tonight: <span class="num">${d.any ? odds + '%' : '~' + odds + '%'}</span>`, opts.length ? `${opts[0].label} lifts it to ${opts[0].odds}%` : 'At its peak. Finish strong.', 'data-act="tab" data-v="saga"');
+  return `<h2>The Saga <small>${esc(c.boss.n)}</small></h2><div class="card">${r1}${r2}</div>`;
 }

@@ -6,41 +6,47 @@
   --card:#1b2a8f; --card2:#2639b8;
   --win-top:#2f45c9; --win-bot:#101a66;
   --line:#e8ecff; --line-dark:#04051a;
-  --txt:#ffffff; --dim:#b9c3ff;
+  --txt:#ffffff; --dim:#d2d9ff;
   --acc:#ffd23f; --acc2:#ffe98a;
   --gold:#ffd23f; --good:#5cf28a; --bad:#ff5d73; --blue:#7fd4ff;
   --hp:#5cf28a; --hp-low:#ffd23f; --hp-crit:#ff5d73; --mp:#7fd4ff; --xp:#ffd23f;
   --mind:#7fd4ff; --body:#ff8a8a; --spirit:#d6a8ff; --craft:#ffd23f; --social:#6ff0a8; --wealth:#ffb547;
   --ring-bg:#04051a; --ring-a:#7fd4ff; --ring-b:#ffd23f; --radar-line:rgb(232 236 255 / .35); --radar-fill:rgb(255 210 63 / .35); --radar-stroke:#ffd23f;
-  --on-acc:#04051a; --field:#04051a; --on-dark:#ffffff; --on-dark-dim:#b9c3ff; --hi:#ffd23f;
+  --on-acc:#04051a; --field:#04051a; --on-dark:#ffffff; --on-dark-dim:#d2d9ff; --hi:#ffd23f;
+  --track:#04051a; --gem-top:#2f45c9; --gem-bot:#101a66; --tag-bg:#04051a;
+  --heat0:#0b1048; --heat1:#2f4a8f; --heat2:#3f8f7a; --heat3:#ffd23f; --heat4:#fff4b8;
   --font-ui:"Pixelify Sans", ui-monospace, "Cascadia Mono", "Roboto Mono", "Courier New", monospace;
   --font-text:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --px:2px;
 }
-/* Parchment (light). Auto follows the OS; data-theme="light" forces it; data-theme="dark" forces night. */
+/* Daylight (light): a cool, high-contrast light theme. Auto follows the OS; data-theme="light" forces it; data-theme="dark" forces Night. */
 @media (prefers-color-scheme: light){
   :root[data-skin="rpg"]:not([data-theme="dark"]){
-    --bg:#e9dcb8; --bg2:#f3e9cc; --card:#fbf3dc; --card2:#f1e2b6;
-    --win-top:#fff8e4; --win-bot:#efdfb3;
-    --line:#3b2a14; --line-dark:#3b2a14;
-    --txt:#2a1d0c; --dim:#6b5434;
-    --acc:#b5261e; --acc2:#8c1c16; --gold:#8a5a00; --good:#1f7a3a; --bad:#b5261e; --blue:#1d5aa6;
-    --hp:#1f7a3a; --hp-low:#8a5a00; --hp-crit:#b5261e; --mp:#1d5aa6; --xp:#8a5a00;
-    --mind:#1d5aa6; --body:#b5261e; --spirit:#6d2fa0; --craft:#8a5a00; --social:#1f7a3a; --wealth:#8a5a00;
-    --ring-bg:#e0cf9f; --ring-a:#1d5aa6; --ring-b:#b5261e; --radar-line:rgb(59 42 20 / .35); --radar-fill:rgb(181 38 30 / .3); --radar-stroke:#b5261e;
-    --on-acc:#fff8e4; --field:#fffaf0; --on-dark:#fff8e4; --on-dark-dim:#d9c79b; --hi:#ffd86b;
+    --bg:#eef2fb; --bg2:#ffffff; --card:#ffffff; --card2:#e3e9fb;
+    --win-top:#ffffff; --win-bot:#f4f7ff;
+    --line:#14183a; --line-dark:#14183a;
+    --txt:#14183a; --dim:#475079;
+    --acc:#1d3fd1; --acc2:#1d3fd1; --gold:#8a5a00; --good:#0b7a3e; --bad:#b3261e; --blue:#1d5aa6;
+    --hp:#0b7a3e; --hp-low:#8a5a00; --hp-crit:#b3261e; --mp:#1d5aa6; --xp:#2639b8;
+    --mind:#1d5aa6; --body:#b3261e; --spirit:#6d2fa0; --craft:#8a5a00; --social:#0b7a3e; --wealth:#8a5a00;
+    --ring-bg:#d6def5; --ring-a:#2639b8; --ring-b:#b3261e; --radar-line:rgb(20 24 58 / .3); --radar-fill:rgb(38 57 184 / .22); --radar-stroke:#2639b8;
+    --on-acc:#ffffff; --field:#ffffff; --on-dark:#ffffff; --on-dark-dim:#cfd6ff; --hi:#ffd23f;
+    --track:#dbe2f7; --gem-top:#2639b8; --gem-bot:#14226e; --tag-bg:transparent;
+    --heat0:#e3e9fb; --heat1:#b8c6f2; --heat2:#7f97e6; --heat3:#4a63d4; --heat4:#1d2fa0;
   }
 }
 :root[data-skin="rpg"][data-theme="light"]{
-  --bg:#e9dcb8; --bg2:#f3e9cc; --card:#fbf3dc; --card2:#f1e2b6;
-  --win-top:#fff8e4; --win-bot:#efdfb3;
-  --line:#3b2a14; --line-dark:#3b2a14;
-  --txt:#2a1d0c; --dim:#6b5434;
-  --acc:#b5261e; --acc2:#8c1c16; --gold:#8a5a00; --good:#1f7a3a; --bad:#b5261e; --blue:#1d5aa6;
-  --hp:#1f7a3a; --hp-low:#8a5a00; --hp-crit:#b5261e; --mp:#1d5aa6; --xp:#8a5a00;
-  --mind:#1d5aa6; --body:#b5261e; --spirit:#6d2fa0; --craft:#8a5a00; --social:#1f7a3a; --wealth:#8a5a00;
-  --ring-bg:#e0cf9f; --ring-a:#1d5aa6; --ring-b:#b5261e; --radar-line:rgb(59 42 20 / .35); --radar-fill:rgb(181 38 30 / .3); --radar-stroke:#b5261e;
-    --on-acc:#fff8e4; --field:#fffaf0; --on-dark:#fff8e4; --on-dark-dim:#d9c79b; --hi:#ffd86b;
+    --bg:#eef2fb; --bg2:#ffffff; --card:#ffffff; --card2:#e3e9fb;
+    --win-top:#ffffff; --win-bot:#f4f7ff;
+    --line:#14183a; --line-dark:#14183a;
+    --txt:#14183a; --dim:#475079;
+    --acc:#1d3fd1; --acc2:#1d3fd1; --gold:#8a5a00; --good:#0b7a3e; --bad:#b3261e; --blue:#1d5aa6;
+    --hp:#0b7a3e; --hp-low:#8a5a00; --hp-crit:#b3261e; --mp:#1d5aa6; --xp:#2639b8;
+    --mind:#1d5aa6; --body:#b3261e; --spirit:#6d2fa0; --craft:#8a5a00; --social:#0b7a3e; --wealth:#8a5a00;
+    --ring-bg:#d6def5; --ring-a:#2639b8; --ring-b:#b3261e; --radar-line:rgb(20 24 58 / .3); --radar-fill:rgb(38 57 184 / .22); --radar-stroke:#2639b8;
+    --on-acc:#ffffff; --field:#ffffff; --on-dark:#ffffff; --on-dark-dim:#cfd6ff; --hi:#ffd23f;
+    --track:#dbe2f7; --gem-top:#2639b8; --gem-bot:#14226e; --tag-bg:transparent;
+    --heat0:#e3e9fb; --heat1:#b8c6f2; --heat2:#7f97e6; --heat3:#4a63d4; --heat4:#1d2fa0;
 }
 
 /* ── page ── */
@@ -123,7 +129,7 @@
 :root[data-skin="rpg"] .avs button{border-radius:2px;font-size:24px;width:48px;height:48px}
 
 /* ── bars: segmented gauges ── */
-:root[data-skin="rpg"] .bar{height:12px;border-radius:0;background:var(--line-dark);border:0;box-shadow:0 0 0 var(--px) var(--line);margin-top:8px;overflow:hidden}
+:root[data-skin="rpg"] .bar{height:12px;border-radius:0;background:var(--track);border:0;box-shadow:0 0 0 var(--px) var(--line);margin-top:8px;overflow:hidden}
 :root[data-skin="rpg"] .bar>i{
   border-radius:0;background:var(--xp);
   -webkit-mask:repeating-linear-gradient(90deg,#000 0 5px,transparent 5px 6px);
@@ -139,11 +145,11 @@
 .gauge .lbl{color:var(--acc)}.gauge .num{text-align:right}.gauge .bar{grid-column:1/-1;margin-top:2px}
 
 /* ── tags, badges, heatmap, chat ── */
-:root[data-skin="rpg"] .tag{border:0;border-radius:2px;background:var(--line-dark);padding:0 7px;font-size:.78rem;box-shadow:inset 0 0 0 1px currentColor}
+:root[data-skin="rpg"] .tag{border:0;border-radius:2px;background:var(--tag-bg);padding:0 7px;font-size:.78rem;box-shadow:inset 0 0 0 1px currentColor}
 :root[data-skin="rpg"] .badge{font-size:.78rem;color:var(--dim)}
 :root[data-skin="rpg"] .badge.got{color:var(--txt);box-shadow:0 0 0 var(--px) var(--line-dark),inset 0 0 0 var(--px) var(--acc),inset 0 0 0 calc(var(--px)*2) var(--line-dark)}
-:root[data-skin="rpg"] .heat i{border-radius:0;background:color-mix(in srgb,var(--line-dark) 85%,var(--card))}
-:root[data-skin="rpg"] .heat i.l1{background:#2f4a8f}:root[data-skin="rpg"] .heat i.l2{background:#3f8f7a}:root[data-skin="rpg"] .heat i.l3{background:#ffd23f}:root[data-skin="rpg"] .heat i.l4{background:#fff4b8}
+:root[data-skin="rpg"] .heat i{border-radius:0;background:var(--heat0)}
+:root[data-skin="rpg"] .heat i.l1{background:var(--heat1)}:root[data-skin="rpg"] .heat i.l2{background:var(--heat2)}:root[data-skin="rpg"] .heat i.l3{background:var(--heat3)}:root[data-skin="rpg"] .heat i.l4{background:var(--heat4)}
 :root[data-skin="rpg"] .msg{border-radius:2px;box-shadow:0 0 0 var(--px) var(--line-dark),inset 0 0 0 var(--px) var(--line);font-family:var(--font-text)}
 :root[data-skin="rpg"] .msg.me{background:var(--acc);color:var(--on-acc)}
 :root[data-skin="rpg"] .msg.bot{background:var(--card2)}
@@ -197,7 +203,7 @@
 @keyframes popnum{0%{opacity:0;margin-top:6px}12%{opacity:1}70%{opacity:1}100%{opacity:0;margin-top:-46px}}
 
 /* ── 5-slot bar: the Saga slot is raised like a gem set in the frame ── */
-:root[data-skin="rpg"] nav button.saga{margin-top:-14px;min-height:70px;background:linear-gradient(180deg,var(--win-top),var(--win-bot));
+:root[data-skin="rpg"] nav button.saga{margin-top:-14px;min-height:70px;background:linear-gradient(180deg,var(--gem-top),var(--gem-bot));
   box-shadow:0 0 0 var(--px) var(--line-dark),inset 0 0 0 var(--px) var(--line),inset 0 0 0 calc(var(--px)*2) var(--line-dark);border-radius:4px 4px 0 0;color:var(--on-dark)}
 :root[data-skin="rpg"] nav button.saga span{font-size:26px}
 :root[data-skin="rpg"] nav button.saga.on{color:var(--hi);box-shadow:0 0 0 var(--px) var(--line-dark),inset 0 0 0 var(--px) var(--hi),inset 0 0 0 calc(var(--px)*2) var(--line-dark)}
@@ -217,3 +223,20 @@
 :root[data-skin="rpg"] .lvl-title{color:var(--acc)}
 :root[data-skin="rpg"] .big-em{animation:chest-shake .5s steps(3)}
 @keyframes chest-shake{25%{transform:translateX(-6px) rotate(-6deg)}50%{transform:translateX(6px) rotate(6deg)}75%{transform:translateX(-4px) rotate(-3deg)}}
+
+/* ── Phase 7: Town restructure, touch targets, compact status strip ── */
+:root[data-skin="rpg"] .btn.sm{min-height:44px}
+:root[data-skin="rpg"] :is(.seg button,.pills button,.qp button,.picker button){min-height:44px}
+:root[data-skin="rpg"] .avs button{width:48px;height:48px}
+:root[data-skin="rpg"] .hud{padding:8px 14px;min-height:60px}
+:root[data-skin="rpg"] .hud .avatar{width:40px;height:40px;font-size:22px}
+:root[data-skin="rpg"] .hud .ttl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+:root[data-skin="rpg"] .hud .bar{height:8px;margin-top:4px}
+:root[data-skin="rpg"] .ritual-list{padding:4px 14px 10px}
+:root[data-skin="rpg"] .ritual-list .task{background:none;box-shadow:none;border-radius:0;margin:0;padding:6px 0;min-height:60px;border-top:1px solid color-mix(in srgb,var(--line) 25%,transparent)}
+:root[data-skin="rpg"] .ritual-list .task:first-of-type{border-top:0}
+:root[data-skin="rpg"] .ritual-list .task .chk{width:44px;height:44px}
+:root[data-skin="rpg"] .moods button{min-height:48px}
+:root[data-skin="rpg"] details.grp>summary{color:var(--acc);font-family:var(--font-ui);text-transform:uppercase;letter-spacing:.08em}
+:root[data-skin="rpg"] .link .go{color:var(--acc);font-family:var(--font-ui)}
+:root[data-skin="rpg"] .hud .avatar{width:44px;height:44px}

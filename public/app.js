@@ -97,7 +97,7 @@ const statLevel = xp => Math.floor(Math.sqrt(xp / 25)) + 1;
 const titleOf = l => TITLES[Math.min(TITLES.length - 1, Math.floor((l - 1) / 3))];
 const daySeed = () => { const d = new Date(); return d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate(); };
 // extension points: separate files (ext-*.js) add cards to each tab through these
-const HOOKS = { today: [], 'today-top': [], hero: [], config: [], money: [], 'money-top': [], plan: [], board: [] };
+const HOOKS = { today: [], 'today-top': [], hero: [], config: [], 'today-saga': [], money: [], 'money-top': [], plan: [], board: [] };
 const hooks = n => (HOOKS[n] || []).map(f => { try { return f() || ''; } catch (e) { console.error(e); return ''; } }).join('');
 // weeks run Monday–Sunday
 function weekStart(d = new Date()) { const x = new Date(d); x.setHours(12, 0, 0, 0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
@@ -1070,24 +1070,45 @@ function hud() {
 function habitRow(h) {
   const done = !!h.log[today()], s = streak(h);
   return `<div class="task ${done ? 'done' : ''}" data-act="habit" data-id="${h.id}"><div class="chk">${done ? '✓' : ''}</div><div class="em">${h.emoji}</div>
-    <div class="grow"><div class="nm">${esc(h.name)}</div>${h.cue ? `<div class="sm dim">↪ ${esc(h.cue)}</div>` : ''}<div class="sm"><span class="tag t-${h.stat}">${STATS[h.stat].n}</span>${DIFF[h.diff]}${isAuto(h) ? ' <span class="fire" style="color:var(--gold)">✨ Automatic</span>' : ''}${s >= 2 ? ` <span class="fire">🔥 ${s}</span>` : ''}${rhythmTag(h)}</div></div>
+    <div class="grow"><div class="nm">${esc(h.name)}</div>${h.cue ? `<div class="sm dim">↪ ${esc(h.cue)}</div>` : ''}<div class="sm"><span class="tag t-${h.stat}">${STATS[h.stat].n}</span>${DIFF[h.diff]}${isAuto(h) ? ' <span class="fire" style="color:var(--gold)">✨ Automatic</span>' : ''}${s >= 2 ? ` <span class="fire">🔥 ${s}</span>` : ''}${rhythmTag(h).replace(" this week", " wk")}</div></div>
     <button class="del" data-act="habit-menu" data-id="${h.id}" aria-label="Edit">⋯</button></div>`;
 }
+// long screens: sections after the first few fold into titled rows (open state is remembered, because render() rebuilds the page)
+const FOLD = { money: 2, hero: 1 }, foldOpen = {};
+document.addEventListener('toggle', ev => { const t = ev.target; if (t && t.classList && t.classList.contains('fold')) foldOpen[t.dataset.fold] = t.open; }, true);
+function foldSections(html, keep, key) {
+  if (!keep) return html;
+  const parts = html.split(/(?=<h2[ >])/);
+  return parts.map((p, i) => {
+    if (i === 0 || i <= keep) return p;
+    const m = p.match(/^<h2[^>]*>([\s\S]*?)<\/h2>([\s\S]*)$/); if (!m) return p;
+    const id = key + ':' + m[1].replace(/<[^>]*>/g, '').replace(/[^a-z]+/gi, '').slice(0, 14).toLowerCase();
+    return `<details class="grp fold" data-fold="${id}"${foldOpen[id] ? ' open' : ''}><summary>${m[1]}</summary>${m[2]}</details>`;
+  }).join('');
+}
+let moreOpen = false;
+document.addEventListener('toggle', ev => { if (ev.target && ev.target.id === 'more-today') moreOpen = ev.target.open; }, true);   // render() rebuilds the page, so remember the fold
 function viewToday() {
   const th = todaysHabits(), done = th.filter(h => h.log[today()]).length, c = S.checkins[today()] || {};
   const tips = coachTips(), tip = tips[tipIdx % tips.length];
   const others = S.habits.filter(h => !scheduled(h) && !h.archived && !h.freq && liteOK(h));
-  return `${hooks('today-top')}<div class="card coach"><div class="bot">🧙</div><div class="grow"><p>${esc(tip)}</p>
-    <button class="btn sm ghost" data-act="tip">Another tip</button></div></div>
-  ${restBanner()}${slipCard()}${autoCard()}${stakeCard()}${weeklyTeaser()}${nextBlockStrip()}${nextUpCard()}${moneyTeaser()}${hooks('today')}
-  <h2>Daily check-in <small>+10 XP</small></h2>
-  <div class="card"><div class="sm dim">Mood</div><div class="moods">${MOODS.map((m, i) => `<button class="${c.mood === i ? 'on' : ''}" data-act="mood" data-v="${i}">${m}</button>`).join('')}</div>
-  <div class="sm dim" style="margin-top:10px">Energy</div><div class="moods">${['🪫', '🔋', '🔋', '⚡', '🚀'].map((m, i) => `<button class="${c.energy === i ? 'on' : ''}" data-act="energy" data-v="${i}">${m}</button>`).join('')}</div></div>
+  const items = [weeklyTeaser(), slipCard(), autoCard(), stakeCard(), nextBlockStrip(), nextUpCard(), moneyTeaser(), hooks('today')].filter(x => x && String(x).trim());
+  const tipCard = `<div class="card coach"><div class="bot">🧙</div><div class="grow"><p>${esc(tip)}</p><button class="btn sm ghost" data-act="tip">Another tip</button></div></div>`;
+  return `${restBanner()}
   <h2>Today's habits <small>${done}/${th.length}</small></h2>
-  ${th.length ? `<div class="bar gold" style="margin:-4px 0 12px"><i style="width:${th.length ? done / th.length * 100 : 0}%"></i></div>` : ''}
+  <div class="card ritual-list" id="rituals">
+  ${th.length ? `<div class="bar gold" style="margin:6px 0 4px"><i style="width:${th.length ? done / th.length * 100 : 0}%"></i></div>` : ''}
   ${th.map(habitRow).join('') || `<div class="empty">No habits scheduled today.<br>Add one to start your streak 🔥</div>`}
-  <button class="btn block ghost" data-act="add-habit">＋ New habit</button>
-  ${others.length ? `<h2 class="dim" style="font-size:.9rem">Not scheduled today</h2>${others.map(h => `<div class="task" style="opacity:.5" data-act="habit-menu" data-id="${h.id}"><div class="em">${h.emoji}</div><div class="grow nm">${esc(h.name)}</div></div>`).join('')}` : ''}`;
+  <button class="btn block ghost" style="margin-top:8px" data-act="add-habit">＋ New habit</button>
+  <div id="checkin"><div class="sm dim" style="margin-top:14px">How are you today? <span class="dim">(+10 XP)</span></div>
+  <div class="moods">${MOODS.map((m, i) => `<button class="${c.mood === i ? 'on' : ''}" data-act="mood" data-v="${i}" aria-label="Mood ${i + 1} of 5">${m}</button>`).join('')}</div>
+  <div class="sm dim" style="margin-top:8px">Energy</div><div class="moods">${['🪫', '🔋', '🔋', '⚡', '🚀'].map((m, i) => `<button class="${c.energy === i ? 'on' : ''}" data-act="energy" data-v="${i}" aria-label="Energy ${i + 1} of 5">${m}</button>`).join('')}</div></div>
+  </div>
+  ${hooks('today-saga')}
+  <details class="grp" id="more-today"${moreOpen ? ' open' : ''}><summary>More today <span class="dim">${items.length || ''}</span></summary>
+  ${items.join('')}${tipCard}
+  ${others.length ? `<h2 class="dim" style="font-size:.9rem">Not scheduled today</h2>${others.map(h => `<div class="task" style="opacity:.6" data-act="habit-menu" data-id="${h.id}"><div class="em">${h.emoji}</div><div class="grow"><div class="nm">${esc(h.name)}</div></div></div>`).join('')}` : ''}
+  </details>`;
 }
 function weeklyTeaser() {
   const w = weeklyState(), b = weeklyBoss(), objs = weeklyObjs(), ready = objs.filter(o => o.prog >= o.target && !w.claimed[o.k]).length;
@@ -1367,7 +1388,7 @@ function render() {
   const views = { today: viewToday, quests: viewQuests, money: viewMoney, focus: viewFocus, squad: viewSquad, coach: viewCoach, hero: viewHero, saga: viewSaga, menu: viewMenu, config: viewConfig };
   const keep = document.activeElement?.id === 'chatin' ? $('#chatin').value : '';
   const lit = NAV.some(n => n[0] === tab) ? tab : 'menu', back = MENU_TABS.includes(tab) ? '<button class="btn sm ghost backbtn" data-act="tab" data-v="menu">◀ Menu</button>' : '';
-  $('#app').innerHTML = hud() + back + views[tab]() +
+  $('#app').innerHTML = hud() + back + foldSections(views[tab](), FOLD[tab], tab) +
     `<nav><div class="in">${NAV.map(([k, e, n]) => `<button class="${lit === k ? 'on' : ''}${k === 'saga' ? ' saga' : ''}" data-act="tab" data-v="${k}"${lit === k ? ' aria-current="page"' : ''}><span>${e}</span>${n}${k === 'saga' && typeof sagaUnread === 'function' && sagaUnread() ? '<i class="bang" aria-label="new episode">!</i>' : ''}</button>`).join('')}</div></nav>`;
   if (keep && $('#chatin')) { $('#chatin').value = keep; $('#chatin').focus(); }
   if (typeof rpgA11y === 'function') rpgA11y();
