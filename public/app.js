@@ -300,7 +300,7 @@ function toggleHabit(id) {
     h.log[d] = { xp, c }; award(xp, c, h.stat); sfx.ding(); buzz(30);
     S.bestStreak = Math.max(S.bestStreak, s);
     if (perfectNow() && !S.perfect[d]) {
-      S.perfect[d] = true; S.chests++; award(50, 20); sfx.chest(); confetti(140);
+      S.perfect[d] = true; S.chests++; award(50, 20); sfx.chest(); confetti(140); if (typeof perfectFx === 'function') perfectFx();
       setTimeout(() => openModal(`<div class="big-em">🌟</div><h2 style="justify-content:center">PERFECT DAY</h2><p>Every habit done. Bonus <b>+50 XP, +20 🪙</b> and a free <b>loot chest</b>!</p><button class="btn block" data-act="close">Nice</button>`, true), 500);
     }
   }
@@ -460,13 +460,14 @@ function claimObjective(k) {
   const w = weeklyState(), o = weeklyObjs().find(x => x.k === k);
   if (!o || w.claimed[k] || o.prog < o.target) return;
   w.claimed[k] = true; award(60, 25); sfx.ding(); buzz(40); confetti(60); save(); render();
+  if (typeof bossHit === 'function') bossHit('-' + 60, false);
 }
 function claimWeeklyBoss() {
   const w = weeklyState(), objs = weeklyObjs();
   if (w.boss || !objs.every(o => w.claimed[o.k])) return;
   w.boss = true; const b = weeklyBoss();
   S.trophies.push({ week: w.week, name: b.n, emoji: b.e, kind: 'boss' }); S.chests += 2;
-  award(300, 150); sfx.level(); confetti(240); save(); checkAch();
+  award(300, 150); sfx.level(); confetti(240); save(); checkAch(); if (typeof bossHit === 'function') bossHit('-300', true);
   openModal(`<div class="big-em">${b.e}</div><h2 style="justify-content:center">${esc(b.n)} SLAIN</h2><p>Weekly boss defeated! <b>+300 XP, +150 🪙, 2 chests</b> and a trophy for your cabinet.</p><button class="btn block" data-act="close">Glorious</button>`, true);
   render();
 }
@@ -576,7 +577,7 @@ function viewBoard() {
   ${squad.err ? `<div class="empty">${squad.err}</div>` : ''}
   ${players.map((c, i) => `<div class="task" style="${c.pid === net.pub ? 'border-color:var(--gold);background:var(--card2)' : ''}">
       <div style="width:30px;text-align:center;font-weight:800;font-size:${i < 3 ? 22 : 16}px">${medals[i] || i + 1}</div><div class="avatar" style="width:42px;height:42px;font-size:22px">${esc(c.avatar)}</div>
-      <div class="grow"><div class="nm">${esc(c.name)}${c.pid === crown ? ' 👑' : ''}${c.pid === net.pub ? ' <span class="dim sm">(you)</span>' : ''}</div><div class="sm dim">Lv ${c.level}${c.trophies ? ' · 🏆 ' + c.trophies : ''}</div></div>
+      <div class="grow"><div class="nm">${esc(c.name)}${c.pid === crown ? ' 👑' : ''}${c.pid === net.pub ? ' <span class="dim sm">(you)</span>' : ''}</div><div class="sm dim">Lv ${c.level}${c.trophies ? ' · 🏆 ' + c.trophies : ''}</div><div class="bar" style="height:7px"><i style="width:${Math.round(Math.max(0, val_(c)) / Math.max(1, ...players.map(p => Math.max(0, val_(p)))) * 100)}%"></i></div></div>
       <b>${fmt(val_(c), c)}</b>${c.pid !== net.pub ? `<button class="btn sm ghost" data-act="cheer" data-id="${c.pid}" title="Cheer">👏</button>` : ''}</div>`).join('') || '<div class="empty">Loading…</div>'}
   <div class="sm dim" style="margin:8px 0">👑 = last week's champion. Cheer a friend: +2 🪙 for you (5/day), +3 🪙 for them. Scores are on the honor system.</div>
   <button class="btn sm ghost" data-act="board-leave">Leave leaderboard</button>`;
@@ -1328,15 +1329,15 @@ function weekSummary() {
 }
 function viewHero() {
   const l = level();
-  return `<div class="card" style="text-align:center"><div class="avatar" style="margin:auto;width:84px;height:84px;font-size:46px">${S.profile.avatar}</div>
-    <h2 style="justify-content:center;margin:8px 0 0">${esc(S.profile.name)}</h2><div class="dim">Level ${l} ${titleOf(l)} · ${S.xp} XP total</div>${radar()}</div>
+  return `${typeof statusWindow === 'function' ? statusWindow() : `<div class="card" style="text-align:center"><div class="avatar" style="margin:auto;width:84px;height:84px;font-size:46px">${S.profile.avatar}</div>
+    <h2 style="justify-content:center;margin:8px 0 0">${esc(S.profile.name)}</h2><div class="dim">Level ${l} ${titleOf(l)} · ${S.xp} XP total</div>${radar()}</div>`}
   <h2>This week</h2>${weekSummary()}
   <h2>Activity <small>last 12 weeks</small></h2><div class="card">${heatmap()}</div>
   <h2>🛍️ Reward shop <small>🪙 ${S.coins}</small></h2><div class="shop">
     <div class="task" data-act="buy-chest"><div class="em">🎁</div><div class="grow"><div class="nm">Mystery chest</div><div class="sm dim">Coins, XP or rare loot</div></div><div class="price">60 🪙</div></div>
     ${S.rewards.map(r => `<div class="task" data-act="buy" data-id="${r.id}"><div class="em">${r.emoji}</div><div class="grow"><div class="nm">${esc(r.name)}</div></div><div class="price">${r.cost} 🪙</div><button class="del" data-act="reward-del" data-id="${r.id}">🗑</button></div>`).join('')}
     <button class="btn block ghost" data-act="add-reward">＋ Add a real-life reward</button></div>
-  <h2>🏆 Achievements <small>${Object.keys(S.achievements).length}/${ACH.length}</small></h2>
+  <h2>🏆 Trophies <small>${Object.keys(S.achievements).length}/${ACH.length}</small></h2>
   <div class="badges">${ACH.map(([id, e, n, d]) => `<div class="badge ${S.achievements[id] ? 'got' : ''}" title="${esc(d)}" data-act="ach" data-id="${id}"><span class="e">${e}</span>${n}</div>`).join('')}</div>
   <h2>Avatar</h2><div class="avs">${AVATARS.map(([e, lv]) => `<button class="${S.profile.avatar === e ? 'on' : ''} ${l < lv ? 'lock' : ''}" data-act="avatar" data-v="${e}" data-lv="${lv}">${l < lv ? '🔒' : e}</button>`).join('')}</div>
   ${hooks('hero')}`;

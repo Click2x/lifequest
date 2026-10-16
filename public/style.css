@@ -215,3 +215,19 @@ body.bt-open{overflow:hidden}
 #battle .more{color:var(--b-acc)}
 @media (max-width:359px){.bt-panel{grid-template-columns:1fr}}
 @media (max-height:640px){.bt-boss{font-size:64px}.bt-msg{min-height:92px}.d20{width:84px;height:84px;font-size:30px}}
+
+/* ── Phase 6 feel ── */
+#fxl .fx-flash{position:absolute;inset:0;background:#fff;opacity:.6;animation:fxfl .4s steps(3) forwards}
+#fxl .fx-flash.gold{background:#ffd23f}
+@keyframes fxfl{to{opacity:0}}
+.popnum.dmg{color:#fff}
+.card.boss.ko .big{animation:bt-ko .7s steps(7) forwards}
+.lvl-win{text-align:left}
+.lvl-title{text-align:center;font:700 1.4rem var(--font-ui,system-ui);color:var(--gold);margin-bottom:10px;letter-spacing:.06em}
+.lvl-line{font-size:1.05rem;margin:6px 0;font-family:var(--font-ui,system-ui)}
+.attr{display:grid;grid-template-columns:3.2ch 2.2ch 2.6ch 1fr 7ch;gap:6px;align-items:center;margin:6px 0}
+.attr .ab{color:var(--acc);font-family:var(--font-ui,system-ui)}.attr b{text-align:right}.attr .md{color:var(--good)}.attr .bar{margin-top:0;height:10px}.attr .an{font-size:.85rem}
+.msg{position:relative}
+.msg.bot::before,.msg.me::before{display:block;font:700 .72rem var(--font-ui,system-ui);letter-spacing:.08em;margin-bottom:2px;opacity:.85}
+.msg.bot::before{content:"SAGE"}.msg.me::before{content:"YOU"}
+[data-act=cheer]{min-height:44px;min-width:44px}

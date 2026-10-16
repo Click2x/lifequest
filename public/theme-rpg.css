@@ -212,3 +212,8 @@
 :root[data-skin="rpg"] .fc-opt:is(:hover,:focus-visible)::before{opacity:1;animation:cursor-bob .5s steps(2) infinite}
 :root[data-skin="rpg"] .forecast .fc-hit,:root[data-skin="rpg"] .forecast .fc-hit .num{font-family:var(--font-ui)}
 :root[data-skin="rpg"] .newchip{color:var(--bad)}
+
+:root[data-skin="rpg"] #modal .lvl-win{padding:4px}
+:root[data-skin="rpg"] .lvl-title{color:var(--acc)}
+:root[data-skin="rpg"] .big-em{animation:chest-shake .5s steps(3)}
+@keyframes chest-shake{25%{transform:translateX(-6px) rotate(-6deg)}50%{transform:translateX(6px) rotate(6deg)}75%{transform:translateX(-4px) rotate(-3deg)}}
